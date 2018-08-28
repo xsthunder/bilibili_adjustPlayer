@@ -1,6 +1,7 @@
 # 哔哩哔哩（bilibili.com）播放器调整
 
 一个B站的用户脚本，调整B站播放器设置，增加一些实用的功能。
+原作者为mickey7q7（账号已消失），本人在最后一版本的基础上适配了bilibili播放器的最新更新
 
 ##  脚本功能
 * 自定义功能快捷键。
@@ -11,14 +12,12 @@
 
 
 ## 脚本安装
-* [GreasyFork](https://greasyfork.org/zh-CN/scripts/21284)  
-https://greasyfork.org/zh-CN/scripts/21284
-* [Github](https://github.com/mickey7q7/bilibili_adjustPlayer)  
-https://github.com/mickey7q7/bilibili_adjustPlayer
+* [Github](https://github.com/kkren/bilibili_adjustPlayer)  
+https://github.com/kkren/bilibili_adjustPlayer
 
 ##  脚本兼容性
-| 脚本管理器 | 是否兼容 
-| ---- | ---- 
+| 脚本管理器 | 是否兼容
+| ---- | ----
 | `Greasemonkey` | ☑
 | `Tampermonkey` | ☑
 |  `Violentmonkey` | ☑
