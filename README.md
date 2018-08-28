@@ -12,8 +12,7 @@
 
 
 ## 脚本安装
-* [Github](https://github.com/kkren/bilibili_adjustPlayer)  
-https://github.com/kkren/bilibili_adjustPlayer
+[![](https://img.shields.io/badge/%E5%AE%89%E8%A3%85%E7%9B%B4%E9%93%BE-%F0%9F%90%92-blue.svg)](https://github.com/kkren/bilibili_adjustPlayer/raw/master/bilibili_adjustPlayer.user.js "请确认已安装并启动脚本管理器")  
 
 ##  脚本兼容性
 | 脚本管理器 | 是否兼容
