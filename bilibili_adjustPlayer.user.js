@@ -6,7 +6,7 @@
 // @homepageURL https://github.com/kkren/bilibili_adjustPlayer
 // @include     http*://www.bilibili.com/video/av*
 // @description 调整B站播放器设置，增加一些实用的功能。原作者为mickey7q7。
-// @version     stardust_2.8
+// @version     stardust_2.9
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
@@ -2907,6 +2907,7 @@
 				#adjust-player-tips .drag-arrow{position:absolute;right:0}
 			*/});
 			var styleNode = document.createElement('style');
+			console.log("deployed css");
 			styleNode.type = 'text/css';
 			styleNode.id = 'adjustPlayerMainCss';
 			styleNode.appendChild(document.createTextNode(css));
@@ -2920,6 +2921,18 @@
 		}
 		var isExistConfigBtn = document.querySelector('#adjust-player-config-btn');
 		if (isExistConfigBtn === null) {
+			var css = commentToString(function () { /*
+				#adjust-player-config-btn{position:fixed;bottom:243px;right:6px;z-index:10}
+				#adjust-player-config-btn span{font-size:12px;display:block;padding:6px 0;text-align:center;line-height:17px;background:#fff;border:1px solid #e7e7e7;-webkit-box-shadow:0 6px 10px 0 hsla(0,0%,73%,.3);box-shadow:0 6px 10px 0 hsla(0,0%,73%,.3);border-radius:2px;color:#212121;width:46px;cursor:pointer;transition:color .3s}
+				#adjust-player-config-btn span:hover {color: #00a1d6;border: 1px solid #00a1d6}
+				.float-nav,.nav-menu {bottom:60px!important}
+			*/});
+			var styleNode = document.createElement('style');
+			console.log("deployed css");
+			styleNode.type = 'text/css';
+			styleNode.id = 'adjustPlayerBtnMainCss';
+			styleNode.appendChild(document.createTextNode(css));
+			document.documentElement.appendChild(styleNode);
 			var configButton = document.createElement('div');
 			configButton.id = 'adjust-player-config-btn';
 			configButton.innerHTML = '<span>播放器<br>调整</span>';
@@ -2927,7 +2940,7 @@
 				configWindow.init();
 			};
 			document.querySelector('body').appendChild(configButton);
-			document.querySelector('.float-nav').style.bottom = "70px"
+			// document.querySelector('.float-nav').style.bottom = "70px"
 		}
 	}
 	var matchURL = {
