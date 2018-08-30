@@ -2892,9 +2892,9 @@
 			var css = commentToString(function() {
 				/*
 				#adjust-player-config-btn{position:fixed;bottom:243px;right:6px;z-index:10;}
-				#adjust-player-config-btn span{font-size:12px;display:block;padding:6px 0;text-align:center;line-height:17px;background:#fff;border:1px solid #e7e7e7;-webkit-box-shadow:0 6px 10px 0 hsla(0,0%,73%,.3);box-shadow:0 6px 10px 0 hsla(0,0%,73%,.3);border-radius:2px;color:#212121;width:46px;cursor:pointer}
+				#adjust-player-config-btn span{font-size:12px;display:block;padding:6px 0;text-align:center;line-height:17px;background:#fff;border:1px solid #e7e7e7;-webkit-box-shadow:0 6px 10px 0 hsla(0,0%,73%,.3);box-shadow:0 6px 10px 0 hsla(0,0%,73%,.3);border-radius:2px;color:#212121;width:46px;cursor:pointer;transition:color .3s}
 				#adjust-player-config-btn span:hover {color: #00a1d6;border: 1px solid #00a1d6}
-				.float-nav,.nav-menu {bottom:60px!important}
+				.float-nav  {bottom:60px!important}
 				.adjust-player-mask{display:none;position:fixed;top:0;left:0;z-index:100001;width:100%;height:100%;background:#000;opacity:.6;filter:alpha(opacity=60)}
 				#adjust-player .title{font-size:16px;color:#222;text-align:center;font-weight:bold;margin-bottom:20px}
 				#adjust-player .dialog{position:fixed;z-index:100002;top:50%;margin-top:-280px;left:50%;width:580px;margin-left:-320px;padding:20px;background-color:rgb(255,255,255);border-radius:6px;box-shadow:1px 1px 40px 0px rgba(0,0,0,0.6);display:block;font-size:14px;line-height:26px}
