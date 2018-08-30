@@ -2027,7 +2027,7 @@
 	var configWindow = {
 		create: function() {
 			var name = 'main';
-			var title = '哔哩哔哩（bilibili.com）播放器调整';
+			var title = '哔哩哔哩播放器调整';
 			var bar = '<span class="btn" action="help">?</span><span class="btn" action="close">X</span>';
 			var content = commentToString(function() {
 				/*
@@ -2260,7 +2260,7 @@
           		<a href="javascript:void(0);" action="storageType" tooltip="脚本设置无法保存的，请点这里！">存储类型</a>
            	</span>
            	<span class="feedback">
-          		<a href="https://greasyfork.org/zh-CN/forum/discussion/39646/%E6%96%B0%E7%89%88%E6%92%AD%E6%94%BE%E5%99%A8%E9%A1%B5%E9%9D%A2">反馈</a>
+          		<a href="https://github.com/kkren/bilibili_adjustPlayer/issues" target="_blank">反馈</a>
            	</span>
         </div>
         <div class="btns">
@@ -2838,7 +2838,7 @@
 		},
 		help: function() {
 			var name = 'help';
-			var title = '哔哩哔哩（bilibili.com）播放器调整';
+			var title = '哔哩哔哩播放器调整';
 			var bar = '<span class="btn" action="close">X</span>';
 			var content = commentToString(function() {
 				/*
