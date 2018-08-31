@@ -74,8 +74,9 @@
 				};
 
 				if (setting.autoFocusPlayer) {
-					unsafeWindow.PlayerAgent.player_widewin = null;
+					//unsafeWindow.PlayerAgent.player_widewin = null;
 					callback();
+					//adjustPlayer.autoFocusPlayer(true, setting.autoFocusPlayerOffsetType, setting.autoFocusPlayerOffsetValue);
 					return;
 				} else if (setting.resizePlayer) {
 					unsafeWindow.PlayerAgent.player_widewin = function() {
@@ -89,14 +90,15 @@
 			};
 		},
 		autoFocusPlayer: function(set, offsetType, offsetValue, isShortcut) {
-			if (typeof set !== 'undefined') {
+			console.log("yes");
+			if (typeof set.autoFocusPlayer !== 'undefined') {
 				try {
 					var focusPlayer = function() {
 						setTimeout(function() {
 							var playerWrapper;
 							var scrollToY;
 							if (matchURL.isVideoAV()) {
-								playerWrapper = document.querySelector('#bofqi.stardust-player');
+								playerWrapper = document.querySelector('#bofqi > .player');
 								scrollToY = playerWrapper.offsetTop;
 							}
 							if (typeof offsetValue !== 'undefined' && typeof offsetType !== 'undefined') {
@@ -119,12 +121,33 @@
 							}
 						}, 200);
 					};
-					if (isShortcut) {
-						unsafeWindow.scrollTo(0, 0);
-						focusPlayer();
-					} else {
-						focusPlayer();
-					}
+					var timerCount = 0;
+					var timer = window.setInterval(function() {
+						if (timerCount >= 20) {
+							clearInterval(timer);
+						}
+						timerCount++;
+						if (typeof set.autoWidescreen !== 'undefined') {
+							var widescreenReady = document.querySelector('.player-mode-widescreen')
+							if (widescreenReady !== null) {
+								if (isShortcut) {
+									unsafeWindow.scrollTo(0, 0);
+									focusPlayer();
+								} else {
+									focusPlayer();
+								}
+								clearInterval(timer);
+							}
+						} else {
+							if (isShortcut) {
+								unsafeWindow.scrollTo(0, 0);
+								focusPlayer();
+							} else {
+								focusPlayer();
+							}
+							clearInterval(timer);
+						}
+					}, 200);
 				} catch (e) {
 					console.log('autoFocus：' + e);
 				}
@@ -438,7 +461,7 @@
 						if (screenMode === "normal") {
 							css = [
 								'@media (min-width: ' + playerCustomWidth + ' ) {',
-								'#bofqi:not(.mini-player).stardust-player {',
+								'#bofqi:not(.mini-player).player {',
 								'    width: ' + playerCustomWidth + ' !important; ',
 								'    height: ' + playerNormalModeHeight + ' !important; ',
 								'    margin-left: 0 !important;',
@@ -447,7 +470,7 @@
 								'    background: none !important;',
 								'    pointer-events: none;',
 								'}',
-								'#bofqi:not(.mini-player).stardust-player .player{',
+								'#bofqi:not(.mini-player).player .player{',
 								'    width: ' + playerNormalModeWidth + ' !important; ',
 								'    height: ' + playerNormalModeHeight + ' !important; ',
 								'    pointer-events: none;',
@@ -464,7 +487,7 @@
 						} else if (screenMode === "widescreen") {
 							css = [
 								'@media (min-width: ' + playerCustomWidth + ' ) {',
-								'#bofqi:not(.mini-player).stardust-player {',
+								'#bofqi:not(.mini-player).player {',
 								'    width: ' + playerCustomWidth + ' !important; ',
 								'    height: calc( ' + playerCustomWidth + ' / calc(' + ratio + ') + ' + playerBottomBarHeight + ') !important; ',
 								'    margin-left: 0 !important;',
@@ -488,6 +511,7 @@
 						if (adjustMiniPlayerSizeCSS !== null) {
 							adjustMiniPlayerSizeCSS.remove();
 						}
+						console.log("resize");
 						node.appendChild(document.createTextNode(css.join('')));
 						document.documentElement.appendChild(node);
 
@@ -513,7 +537,7 @@
 					var fixMiniPlayer = function() {
 						var observerPlayerElement = document.querySelector('#bofqi');
 						var isMiniPlayer;
-						if (observerPlayerElement.getAttribute("class").search("mini-player") !== -1) {
+						if (observerPlayerElement.getAttribute("class") !== null && observerPlayerElement.getAttribute("class").search("mini-player") !== -1) {
 							isMiniPlayer = true;
 						} else {
 							isMiniPlayer = false;
@@ -753,7 +777,7 @@
 					}
 
 					var isMiniPlayer;
-					if (observerPlayerElement.getAttribute("class").search("mini-player") !== -1) {
+					if (observerPlayerElement.getAttribute("class") !== null && observerPlayerElement.getAttribute("class").search("mini-player") !== -1) {
 						isMiniPlayer = true;
 					} else {
 						isMiniPlayer = false;
@@ -1547,7 +1571,7 @@
 				} else {
 					//开启“网页全屏”后，不加载的功能
 					adjustPlayer.fixWidescreenFocusPlayer(setting, isReload, adjustPlayer.autoWidescreen);
-					adjustPlayer.autoFocusPlayer(setting.autoFocusPlayer, setting.autoFocusPlayerOffsetType, setting.autoFocusPlayerOffsetValue);
+					adjustPlayer.autoFocusPlayer(setting, setting.autoFocusPlayerOffsetType, setting.autoFocusPlayerOffsetValue);
 					adjustPlayer.resizePlayer(setting.resizePlayer, setting.resizePlayerWidth, setting.resizePlayerRatio, setting.resizePlayerVideoInfoAndUpInfoPosition, setting.autoHideSendbar);
 				}
 				adjustPlayer.shortcuts(setting.shortcuts);
