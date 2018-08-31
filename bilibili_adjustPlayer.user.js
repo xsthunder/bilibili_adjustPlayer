@@ -126,6 +126,7 @@
 							clearInterval(timer);
 						}
 						timerCount++;
+
 						var screenMode = sessionStorage.getItem("adjustPlayer_screenMode");
 						if (screenMode == 'widescreen') {
 							var widescreenReady = document.querySelector('.player-mode-widescreen')
