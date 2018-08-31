@@ -90,8 +90,7 @@
 			};
 		},
 		autoFocusPlayer: function(set, offsetType, offsetValue, isShortcut) {
-			console.log("yes");
-			if (typeof set.autoFocusPlayer !== 'undefined') {
+			if (typeof set !== 'undefined') {
 				try {
 					var focusPlayer = function() {
 						setTimeout(function() {
@@ -127,7 +126,8 @@
 							clearInterval(timer);
 						}
 						timerCount++;
-						if (typeof set.autoWidescreen !== 'undefined') {
+						var screenMode = sessionStorage.getItem("adjustPlayer_screenMode");
+						if (screenMode == 'widescreen') {
 							var widescreenReady = document.querySelector('.player-mode-widescreen')
 							if (widescreenReady !== null) {
 								if (isShortcut) {
@@ -1571,7 +1571,7 @@
 				} else {
 					//开启“网页全屏”后，不加载的功能
 					adjustPlayer.fixWidescreenFocusPlayer(setting, isReload, adjustPlayer.autoWidescreen);
-					adjustPlayer.autoFocusPlayer(setting, setting.autoFocusPlayerOffsetType, setting.autoFocusPlayerOffsetValue);
+					adjustPlayer.autoFocusPlayer(setting.autoFocusPlayer, setting.autoFocusPlayerOffsetType, setting.autoFocusPlayerOffsetValue);
 					adjustPlayer.resizePlayer(setting.resizePlayer, setting.resizePlayerWidth, setting.resizePlayerRatio, setting.resizePlayerVideoInfoAndUpInfoPosition, setting.autoHideSendbar);
 				}
 				adjustPlayer.shortcuts(setting.shortcuts);
