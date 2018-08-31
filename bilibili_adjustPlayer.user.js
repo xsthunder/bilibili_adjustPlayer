@@ -6,7 +6,7 @@
 // @homepageURL https://github.com/kkren/bilibili_adjustPlayer
 // @include     http*://www.bilibili.com/video/av*
 // @description 调整B站播放器设置，增加一些实用的功能。原作者为mickey7q7。
-// @version     stardust_2.9.2
+// @version     stardust_2.9.3
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
@@ -436,22 +436,22 @@
 		},
 		resizePlayer: function(set, width, ratio, videoInfoAndUpInfoPosition, isAutohideControlbar) {
 			if (typeof set !== 'undefined' && typeof width !== 'undefined') {
-				try {
+				try{
 					var resizePlayer = function() {
 						var screenMode = sessionStorage.getItem("adjustPlayer_screenMode");
 						var playerCustomWidth = width + 'px';
-						var playerNormalModeWidth = 'calc(' + playerCustomWidth + ' - 350px - 30px )';
+						var playerNormalModeWidth = 'calc('+ playerCustomWidth +' - 350px - 30px )';
 						var playerMarginTop = 'calc(0px + 50px + 20px)';
 						var playerBottomBarHeight = isAutohideControlbar && screenMode === 'widescreen' ? playerBottomBarHeight = '0px' : playerBottomBarHeight = '46px';
-						var playerNormalModeHeight = 'calc( ' + playerNormalModeWidth + ' / calc(' + ratio + ') + ' + playerBottomBarHeight + ')';
+						var playerNormalModeHeight = 'calc( '+ playerNormalModeWidth +' / calc('+ ratio +') + '+ playerBottomBarHeight +')';
 						var videoInfoAndUpInfo = '';
 
 						//videoInfoAndUpInfoPosition
 						if (videoInfoAndUpInfoPosition === 'top') {
 							playerMarginTop = 'calc(0px + 50px + 20px + 120px)';
 							videoInfoAndUpInfo = '#viewbox_report,#v_upinfo { position: absolute !important; top: 70px !important;  }' +
-								'#viewbox_report { max-width:calc(' + width + 'px - 384px - 20px ); }' +
-								'#v_upinfo{ margin-left: calc(' + width + 'px - 384px); max-width:384px; } .up-info .u-info .desc { max-width:calc(350px - 30px); } .up-info .btn { margin-top: 50px; position: absolute; left: 64px; }';
+								'#viewbox_report { max-width:calc('+ width +'px - 384px - 20px ); }' +
+								'#v_upinfo{ margin-left: calc('+ width +'px - 384px); max-width:384px; } .up-info .u-info .desc { max-width:calc(350px - 30px); } .up-info .btn { margin-top: 50px; position: absolute; left: 64px; }';
 						} else if (videoInfoAndUpInfoPosition === 'bottom') {
 							videoInfoAndUpInfo = '';
 						} else {
@@ -461,47 +461,47 @@
 						var css = [''];
 						if (screenMode === "normal") {
 							css = [
-								'@media (min-width: ' + playerCustomWidth + ' ) {',
-								'#bofqi:not(.mini-player).player {',
-								'    width: ' + playerCustomWidth + ' !important; ',
-								'    height: ' + playerNormalModeHeight + ' !important; ',
+								'@media (min-width: '+ playerCustomWidth +' ) {',
+								'#bofqi:not(.mini-player) {',
+								'    width: '+ playerCustomWidth +' !important; ',
+								'    height: '+ playerNormalModeHeight +' !important; ',
 								'    margin-left: 0 !important;',
-								'    left: calc(50% - ' + playerCustomWidth + ' / 2) !important; ',
-								'    top: ' + playerMarginTop + ' !important;',
+								'    left: calc(50% - '+ playerCustomWidth +' / 2) !important; ',
+								'    top: '+ playerMarginTop +' !important;',
 								'    background: none !important;',
 								'    pointer-events: none;',
+								'    position: absolute !important;',
 								'}',
-								'#bofqi:not(.mini-player).player .player{',
-								'    width: ' + playerNormalModeWidth + ' !important; ',
-								'    height: ' + playerNormalModeHeight + ' !important; ',
+								'#bofqi:not(.mini-player) .player{',
+								'    width: '+ playerNormalModeWidth +' !important; ',
+								'    height: '+ playerNormalModeHeight +' !important; ',
 								'    pointer-events: none;',
 								'}',
-								'#playerWrap { display:none !important; }',
-								'.v-wrap  { width: ' + playerCustomWidth + ' !important; margin: 0 auto !important; }',
+								'.v-wrap  { width: '+ playerCustomWidth +' !important; margin: 0 auto !important; }',
 								'.v-wrap .l-con { width: calc(100% - 350px - 30px) !important; }',
 								'.v-wrap .r-con { width: 350px !important; }',
-								'.v-wrap .l-con , .v-wrap .r-con { margin-top:calc(' + playerNormalModeHeight + ' + ' + playerMarginTop + ' ) !important; }',
-								'#danmukuBox { position: absolute !important; top: ' + playerMarginTop + ' !important; height: ' + playerNormalModeHeight + ' !important; }',
-								'' + videoInfoAndUpInfo + '',
+								'.v-wrap .l-con , .v-wrap .r-con { margin-top:calc('+ playerNormalModeHeight +' + '+ playerMarginTop +' ) !important; }',
+								'#danmukuBox { position: absolute !important; top: '+ playerMarginTop +' !important; height: '+ playerNormalModeHeight +' !important; }',
+								''+ videoInfoAndUpInfo +'',
 								'}'
 							];
 						} else if (screenMode === "widescreen") {
 							css = [
-								'@media (min-width: ' + playerCustomWidth + ' ) {',
-								'#bofqi:not(.mini-player).player {',
-								'    width: ' + playerCustomWidth + ' !important; ',
-								'    height: calc( ' + playerCustomWidth + ' / calc(' + ratio + ') + ' + playerBottomBarHeight + ') !important; ',
+								'@media (min-width: '+ playerCustomWidth +' ) {',
+								'#bofqi:not(.mini-player) {',
+								'    width: '+ playerCustomWidth +' !important; ',
+								'    height: calc( '+ playerCustomWidth +' / calc('+ ratio +') + '+ playerBottomBarHeight +') !important; ',
 								'    margin-left: 0 !important;',
-								'    left: calc(50% - ' + playerCustomWidth + ' / 2) !important; ',
-								'    top: ' + playerMarginTop + ' !important;',
+								'    left: calc(50% - '+ playerCustomWidth +' / 2) !important; ',
+								'    top: '+ playerMarginTop +' !important;',
+								'    position: absolute !important;',
 								'}',
-								'#playerWrap { display:none !important; }',
-								'.v-wrap  { width: ' + playerCustomWidth + ' !important; margin: 0 auto !important; }',
+								'.v-wrap  { width: '+ playerCustomWidth +' !important; margin: 0 auto !important; }',
 								'.v-wrap .l-con { width: calc(100% - 350px - 30px) !important; }',
 								'.v-wrap .r-con { width: 350px !important; }',
-								'.v-wrap .l-con , .v-wrap .r-con { margin-top:calc(' + playerCustomWidth + ' / calc(' + ratio + ') + ' + playerBottomBarHeight + ' + ' + playerMarginTop + ' ) !important; }',
-								'#danmukuBox { position: absolute !important; top: ' + playerMarginTop + ' !important; height: ' + playerNormalModeHeight + ' !important; visibility: hidden;}',
-								'' + videoInfoAndUpInfo + '',
+								'.v-wrap .l-con , .v-wrap .r-con { margin-top:calc('+ playerCustomWidth +' / calc('+ ratio +') + '+ playerBottomBarHeight +' + '+ playerMarginTop +' ) !important; }',
+								'#danmukuBox { position: absolute !important; top: '+ playerMarginTop +' !important; height: '+ playerNormalModeHeight +' !important; visibility: hidden;}',
+								''+ videoInfoAndUpInfo +'',
 								'}'
 							];
 						}
@@ -512,79 +512,56 @@
 						if (adjustMiniPlayerSizeCSS !== null) {
 							adjustMiniPlayerSizeCSS.remove();
 						}
-						console.log("resize");
 						node.appendChild(document.createTextNode(css.join('')));
 						document.documentElement.appendChild(node);
 
 						//修复高度不正确
-						setTimeout(function() {
-							clearTimeout(this.resizeTimer);
-							var evt = document.createEvent('Event');
-							evt.initEvent('resize', true, true);
-							querySelectorFromIframe('.bilibili-player-video video').dispatchEvent(evt);
-						}, 800);
+						var evt = document.createEvent('Event');
+						evt.initEvent('resize', true, true);
+						querySelectorFromIframe('.bilibili-player-video video').dispatchEvent(evt);
 
 						//普通模式下超过最小高度不调整
 						if (screenMode === "normal") {
-							var videoHeight = document.querySelector('#bofqi:not(.mini-player).stardust-player').offsetHeight;
-							if (videoHeight <= 408) {
-								var adjustMiniPlayerSizeCSS = document.querySelector('#adjustPlayerSize');
-								if (adjustMiniPlayerSizeCSS !== null) {
-									adjustMiniPlayerSizeCSS.remove();
+							var player = document.querySelector('#bofqi:not(.mini-player)');
+							if (player !== null) {
+								if(player.offsetHeight <= 408){
+									var adjustMiniPlayerSizeCSS = document.querySelector('#adjustPlayerSize');
+									if (adjustMiniPlayerSizeCSS !== null) {
+										adjustMiniPlayerSizeCSS.remove();
+									}
 								}
 							}
 						}
 					};
-					var fixMiniPlayer = function() {
-						var observerPlayerElement = document.querySelector('#bofqi');
-						var isMiniPlayer;
-						if (observerPlayerElement.getAttribute("class") !== null && observerPlayerElement.getAttribute("class").search("mini-player") !== -1) {
-							isMiniPlayer = true;
-						} else {
-							isMiniPlayer = false;
-						}
-						var initResize = function(isMiniPlayer) {
-							if (!isMiniPlayer) {
-								resizePlayer();
-							}
-						};
+					var fixSwitchScreenMode = function() {
 						var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
-						var observer = new MutationObserver(function(records) {
-							records.map(function(record) {
+						var observer = new MutationObserver(function (records) {
+							records.map(function(record){
 								var resizeTimer;
 								resizeTimer = setTimeout(function() {
 									clearTimeout(this.resizeTimer);
-									if (record.target.getAttribute("class").search("mini-player") !== -1) {
-										isMiniPlayer = true;
-									} else {
-										isMiniPlayer = false;
-									}
-									//console.log(isMiniPlayer);
-									initResize(isMiniPlayer);
+									resizePlayer();
 								}, 200);
 							});
 						});
-						observer.observe(observerPlayerElement, {
+						observer.observe(document.querySelector('#bofqi'), {
 							attributes: true,
-							attributeFilter: ['class']
+							childList: true
 						});
-
-					};
+					}
 					var player = isPlayer();
 					if (player === "html5Player") {
 						setTimeout(function() {
 							if (document.querySelector('#adjustPlayerSize') !== null) {
-								fixMiniPlayer();
+								fixSwitchScreenMode();
 								return;
 							} else {
 								resizePlayer();
-								fixMiniPlayer();
+								fixSwitchScreenMode();
 							}
-						}, 0);
+						}, 200);
 					}
-				} catch (e) {
-					console.log('resizePlayer：' + e);
-				}
+				} catch (e) {console.log('resizePlayer：'+e);}
 			}
 		},
 		resizeMiniPlayer: function(set, width, isResizable) {
