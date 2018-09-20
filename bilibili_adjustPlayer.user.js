@@ -6,7 +6,7 @@
 // @homepageURL https://github.com/kkren/bilibili_adjustPlayer
 // @include     http*://www.bilibili.com/video/av*
 // @description 调整B站播放器设置，增加一些实用的功能。原作者为mickey7q7。
-// @version     stardust_2.9.4
+// @version     stardust_2.9.5
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
@@ -167,7 +167,9 @@
 				var hideDanmuku = function() {
 					var controlBtn = querySelectorFromIframe('.bilibili-player-video-sendbar .bilibili-player-video-danmaku-root .bilibili-player-video-danmaku-switch > input');
 					if (controlBtn !== null) {
+
 						doClick(controlBtn);
+						console.log("hide danmu");
 					}
 				};
 
@@ -1531,7 +1533,7 @@
 					]).then(function(values) {
 						createMouseoverAndMouseoutEvent('hide', danmakuSettingLitePanel).then(function(value) {
 							if (value === 'hide') {
-								adjustPlayer.hideDanmuku(setting.hideDanmuku, setting.hideDanmukuType);
+								//adjustPlayer.hideDanmuku(setting.hideDanmuku, setting.hideDanmukuType);
 							}
 						});
 					});
@@ -1544,6 +1546,8 @@
 			adjustPlayer.autoPlay(setting.autoPlay, video);
 			adjustPlayer.autoVideoSpeed(setting.autoVideoSpeed, setting.autoVideoSpeedValue, video);
 			adjustPlayer.skipSetTime(setting.skipSetTime, setting.skipSetTimeValue, video);
+
+			adjustPlayer.hideDanmuku(setting.hideDanmuku, setting.hideDanmukuType);
 
 			if (isReload) {
 				var screenMode = sessionStorage.getItem("adjustPlayer_screenMode");
