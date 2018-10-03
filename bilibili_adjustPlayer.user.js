@@ -6,7 +6,7 @@
 // @homepageURL https://github.com/kkren/bilibili_adjustPlayer
 // @include     http*://www.bilibili.com/video/av*
 // @description 调整B站播放器设置，增加一些实用的功能。原作者为mickey7q7。
-// @version     stardust_2.9.5
+// @version     stardust_2.9.6
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
@@ -1410,6 +1410,22 @@
 				init: function(set) {
 					if (typeof set !== 'undefined') {
 						try {
+							if (typeof set.shortcutsHideTips !== 'undefined') {
+								var css = [
+									'#adjust-player-shortcuts-tips{display: none!important;}'
+								];
+								//console.log(resizableElementWidth + "\n" + resizableElementHeight);
+								var node = document.createElement('style');
+								node.type = 'text/css';
+								node.id = 'showTips';
+								node.appendChild(document.createTextNode(css.join('')));
+								var showTipsCSS = document.querySelector("#showTips");
+								if (showTipsCSS !== null) {
+									showTipsCSS.remove();
+								}
+								node.appendChild(document.createTextNode(css.join('')));
+								document.documentElement.appendChild(node);
+							}
 							if (set.shortcutsSwitch !== true) {
 								return;
 							}
@@ -2063,6 +2079,7 @@
             				</label>
             				<div class="shortcutsItem">
             					<label><input name="shortcutsVolumeSeekingGlobal" type="checkbox" list="shortcuts" ><span class="checkbox"></span>修改音量/快进退为全局<span tooltip="使用帮助：&#10;1：修改默认的快捷键行为，不用把当前焦点定位到播放器上也能生效。" class="tipsButton">[?]</span></label>
+            					<label><input name="shortcutsHideTips" type="checkbox" list="shortcuts" ><span class="checkbox"></span>隐藏快捷键提示语</label>
             					<label>
             						<input name="playPause" type="checkbox" list="shortcuts"><span class="checkbox"></span>播放/暂停视频 <span class="tipsButton" action="shortcuts" typeName="playPause">[设置]</span>
             						<input type="text" name="playPauseKeyName" readOnly="true" list="shortcuts">
@@ -2977,7 +2994,6 @@
 			*/
 			});
 			var styleNode = document.createElement('style');
-			console.log("deployed css");
 			styleNode.type = 'text/css';
 			styleNode.id = 'adjustPlayerMainCss';
 			styleNode.appendChild(document.createTextNode(css));
