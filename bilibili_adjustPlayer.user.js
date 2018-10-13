@@ -6,7 +6,7 @@
 // @homepageURL https://github.com/kkren/bilibili_adjustPlayer
 // @include     http*://www.bilibili.com/video/av*
 // @description 调整B站播放器设置，增加一些实用的功能。原作者为mickey7q7。
-// @version     stardust_2.9.6
+// @version     stardust_2.9.7
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
@@ -882,12 +882,13 @@
 			var shortcut = {
 				playPause: function() {
 					var video = querySelectorFromIframe('.bilibili-player-video video');
+					var button = querySelectorFromIframe('.bilibili-player-video-btn bilibili-player-video-btn-stary');
 					if (video !== null) {
 						if (!video.paused) {
-							doClick(video);
+							doClick(button);
 							shortcut.shortcutsTips("播放/暂停", "暂停");
 						} else {
-							doClick(video);
+							doClick(button);
 							shortcut.shortcutsTips("播放/暂停", "播放");
 						}
 					}
