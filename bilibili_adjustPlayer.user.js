@@ -6,7 +6,7 @@
 // @homepageURL https://github.com/kkren/bilibili_adjustPlayer
 // @include     http*://www.bilibili.com/video/av*
 // @description 调整B站播放器设置，增加一些实用的功能。原作者为mickey7q7。
-// @version     stardust_2.9.7
+// @version     stardust_2.9.8
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
@@ -158,7 +158,13 @@
 			if (typeof set !== 'undefined' && video !== null) {
 				if (video.play) {
 					video.play();
-					console.log("do play");
+				}
+			}
+		},
+		chooseQuality: function(set, video) {
+			if (typeof set !== 'undefined' && video !== null) {
+				if (video.play) {
+					video.play();
 				}
 			}
 		},
@@ -882,7 +888,7 @@
 			var shortcut = {
 				playPause: function() {
 					var video = querySelectorFromIframe('.bilibili-player-video video');
-					var button = querySelectorFromIframe('.bilibili-player-video-btn bilibili-player-video-btn-stary');
+					var button = querySelectorFromIframe('.bilibili-player-video-btn-startauto');
 					if (video !== null) {
 						if (!video.paused) {
 							doClick(button);
@@ -900,7 +906,7 @@
 						var contextMenu = querySelectorFromIframe('.bilibili-player-area > .bilibili-player-video-wrap');
 						contextMenuClick(contextMenu);
 
-						var controlBtn = querySelectorFromIframe('.bilibili-player-context-menu-container');
+						var controlBtn = querySelectorFromIframe('div.bilibili-player-context-menu-container:nth-child(4)');
 						if (controlBtn !== null) {
 							var contextMenuItem = controlBtn.querySelectorAll('li > a'),
 								i;
@@ -910,7 +916,7 @@
 									doClick(querySelectorFromIframe('a.bilibili-player-video-info-close'));
 									var fps = querySelectorFromIframe('.bilibili-player-video-info-panel > div[data-name="fps"] .info-data');
 									fps = parseFloat(fps.innerHTML);
-									if (isNaN(fps)) {
+									if (!isNaN(fps)) {
 										framerate = fps;
 									}
 									break;
@@ -919,8 +925,8 @@
 						}
 						//var currentFrame = Math.floor(video.currentTime * framerate);
 						if (!video.paused) {
-							var video = querySelectorFromIframe('.bilibili-player-video');
-							doClick(video);
+							var button = querySelectorFromIframe('.bilibili-player-video-btn-start');
+							doClick(button);
 						}
 						if (type === "prev") {
 							video.currentTime -= 1 / framerate;
@@ -2223,7 +2229,7 @@
 						</label>
             			<label fname="autoWebFullScreen"><input name="autoWebFullScreen" type="checkbox"><span class="checkbox"></span>自动网页全屏<span tooltip="使用帮助：&#10;1：按Esc键退出网页全屏&#10;3：开启此功能后，调整大小，自动宽屏，定位功能不会启用" class="tipsButton">[?]</span></label>
             			<label fname="doubleClickFullScreen" class="multiLine"><input name="doubleClickFullScreen" type="checkbox" action="childElementDisabledEvent" disabledChildElement="input,doubleClickFullScreenDelayed" ><span class="checkbox"></span>双击全屏<span tooltip="使用帮助：&#10;1：双击视频区域全屏" class="tipsButton">[?]</span>
-						<div class="newLine">播放/暂停延时<input name="doubleClickFullScreenDelayed" type="number" min="0" max="500" placeholder="200" value="200" style="width: 45px;">毫秒<span tooltip="使用帮助：&#10;1：开启“双击全屏”功能后点击视频区域“播放/暂停”会增加延时，使全屏功能更流畅&#10;2：由于增加了延时，导致点击视频区域“播放/暂停”功能不是及时的，这时可以用键盘空格键暂停&#10;3：毫秒数设置为0，关闭延时" class="tipsButton">[?]</span></div></label>
+						<div class="newLine">播放/暂停延时<input name="doubleClickFullScreenDelayed" type="number" min="0" max="500" placeholder="200" value="200" style="width: 45px;">毫秒<span tooltip="使用帮助：&#10;1：开启“双击全屏”功能后点击视频区域“播放/暂停”会增加延时，使全屏功能更流畅&#10;2：由于增加了延时，导致点击视频区域“播放/暂停”功能不是及时的，这时可以用键盘空格键暂停&#10;3：毫秒数设置为0，关闭延时&#10;4：由于电脑的性能，实际的延迟比设置的更高" class="tipsButton">[?]</span></div></label>
 					</div>
             	</fieldset>
             	<fieldset class="playbackGroup">
