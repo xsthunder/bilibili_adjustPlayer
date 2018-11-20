@@ -6,7 +6,7 @@
 // @homepageURL https://github.com/kkren/bilibili_adjustPlayer
 // @include     http*://www.bilibili.com/video/av*
 // @description 调整B站播放器设置，增加一些实用的功能。原作者为mickey7q7。
-// @version     stardust_2.9.8
+// @version     stardust_2.10.0
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
@@ -44,6 +44,17 @@
 						document.addEventListener("MSFullscreenChange", fullscreenEvent);
 					}
 				}
+			}
+		},
+		autoSkipElectric: function(set) {
+			if (typeof set !== 'undefined') {
+				var video = querySelectorFromIframe('.bilibili-player-video > video:nth-child(1)')
+				video.addEventListener("ended", function(e) {
+					var jumpBtn = querySelectorFromIframe('.bilibili-player-electric-panel-jump');
+					if (jumpBtn !== null) {
+						doClick(jumpBtn);
+					}
+				})
 			}
 		},
 		fixWidescreenFocusPlayer: function(setting, isReload, autoWidescreenCallback) {
@@ -888,7 +899,7 @@
 			var shortcut = {
 				playPause: function() {
 					var video = querySelectorFromIframe('.bilibili-player-video video');
-					var button = querySelectorFromIframe('.bilibili-player-video-btn-startauto');
+					var button = querySelectorFromIframe('.bilibili-player-video-btn-start');
 					if (video !== null) {
 						if (!video.paused) {
 							doClick(button);
@@ -1569,7 +1580,7 @@
 			adjustPlayer.autoPlay(setting.autoPlay, video);
 			adjustPlayer.autoVideoSpeed(setting.autoVideoSpeed, setting.autoVideoSpeedValue, video);
 			adjustPlayer.skipSetTime(setting.skipSetTime, setting.skipSetTimeValue, video);
-
+			adjustPlayer.autoSkipElectric(setting.autoSkipElectric);
 			adjustPlayer.hideDanmuku(setting.hideDanmuku, setting.hideDanmukuType);
 
 			if (isReload) {
@@ -2295,6 +2306,7 @@
 							<span tooltip="使用帮助：&#10;1：开启“修改迷你播放器宽度”后，拖动迷你播放器右下角调节按钮，可以调整大小。&#10;2：此功能是“实验功能”，部分页面可能不起作用" class="tipsButton">[?]</span>
 						</div></label>
 						<label fname="autoLightOn"><input name="autoLightOn" type="checkbox"><span class="checkbox"></span>自动播放器关灯<span tooltip="使用帮助：&#10;1：在视频区域内点击右键进行开，关灯操作&#10;2：双击黑暗区域开灯。" class="tipsButton">[?]</span></label>
+						<label fname="autoSkipElectric"><input name="autoSkipElectric" type="checkbox"><span class="checkbox"></span>自动跳过充电榜</label>
             		</div>
             	</fieldset>
             </div>
