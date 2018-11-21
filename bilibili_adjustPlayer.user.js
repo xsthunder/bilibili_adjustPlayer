@@ -178,7 +178,7 @@
                         			createMouseoverAndMouseoutEvent('hide', controlBtn);
 						
 						var chooseDanmaku = querySelectorFromIframe('.bilibili-player-video-danmaku-root .bilibili-player-video-danmaku-switch .choose_danmaku');
-						if (chooseDanmaku.innerHTML === "开启弹幕") {
+						if (chooseDanmaku.innerHTML === "关闭弹幕") {
 						  	doClick(controlBtn);
 							console.log("hide danmu");
 						}
