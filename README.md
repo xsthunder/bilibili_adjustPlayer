@@ -20,7 +20,8 @@
 | `Greasemonkey` | ☑
 | `Tampermonkey` | ☑
 |  `Violentmonkey` | ☑
-
+## 协议
+所有本人修改与添加的代码视为以 GPL3.0 协议发布，原作者留下的代码保留 MIT 协议
 ## 特别感谢
 
 [Phantom网络加速](https://ssrfq.com/)
