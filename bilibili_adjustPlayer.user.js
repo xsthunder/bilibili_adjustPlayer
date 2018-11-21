@@ -286,12 +286,10 @@
 			if (typeof set !== 'undefined') {
 				var video = querySelectorFromIframe('.bilibili-player-video > video:nth-child(1)')
 				video.addEventListener("ended", function(e) {
-					var jumpBtn = querySelectorFromIframe('.bilibili-player-electric-panel-jump');
-					if (jumpBtn !== null) {
-						doClick(jumpBtn);
-					}
-					var nextBtn = querySelectorFromIframe('.bilibili-player-video-btn-next');
-                    			if (nextBtn !== null) {
+					var paused = querySelectorFromIframe('.video-state-pause');
+                    			var nextBtn = querySelectorFromIframe('.bilibili-player-video-btn-next');
+
+					if (paused !== null && nextBtn !== null) {
 						doClick(nextBtn);
 					}
 				})
