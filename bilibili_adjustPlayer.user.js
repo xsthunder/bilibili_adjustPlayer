@@ -46,17 +46,6 @@
 				}
 			}
 		},
-		autoSkipElectric: function(set) {
-			if (typeof set !== 'undefined') {
-				var video = querySelectorFromIframe('.bilibili-player-video > video:nth-child(1)')
-				video.addEventListener("ended", function(e) {
-					var jumpBtn = querySelectorFromIframe('.bilibili-player-electric-panel-jump');
-					if (jumpBtn !== null) {
-						doClick(jumpBtn);
-					}
-				})
-			}
-		},
 		fixWidescreenFocusPlayer: function(setting, isReload, autoWidescreenCallback) {
 			var timerCount = 0;
 			var timer = window.setInterval(function() {
@@ -185,8 +174,14 @@
 					var controlBtn = querySelectorFromIframe('.bilibili-player-video-sendbar .bilibili-player-video-danmaku-root .bilibili-player-video-danmaku-switch > input');
 					if (controlBtn !== null) {
 
-						doClick(controlBtn);
-						console.log("hide danmu");
+						createMouseoverAndMouseoutEvent('show', controlBtn);
+                        			createMouseoverAndMouseoutEvent('hide', controlBtn);
+						
+						var chooseDanmaku = querySelectorFromIframe('.bilibili-player-video-danmaku-root .bilibili-player-video-danmaku-switch .choose_danmaku');
+						if (chooseDanmaku.innerHTML === "关闭弹幕") {
+						  	doClick(controlBtn);
+							console.log("hide danmu");
+						}
 					}
 				};
 
@@ -285,6 +280,19 @@
 				} catch (e) {
 					console.log('tabDanmulist：' + e);
 				}
+			}
+		},
+		autoNextPlist: function(set) {
+			if (typeof set !== 'undefined') {
+				var video = querySelectorFromIframe('.bilibili-player-video > video:nth-child(1)')
+				video.addEventListener("ended", function(e) {
+					var paused = querySelectorFromIframe('.video-state-pause');
+                    			var nextBtn = querySelectorFromIframe('.bilibili-player-video-btn-next');
+
+					if (paused !== null && nextBtn !== null) {
+						doClick(nextBtn);
+					}
+				})
 			}
 		},
 		autoLoopVideo: function(set) {
@@ -1580,7 +1588,7 @@
 			adjustPlayer.autoPlay(setting.autoPlay, video);
 			adjustPlayer.autoVideoSpeed(setting.autoVideoSpeed, setting.autoVideoSpeedValue, video);
 			adjustPlayer.skipSetTime(setting.skipSetTime, setting.skipSetTimeValue, video);
-			adjustPlayer.autoSkipElectric(setting.autoSkipElectric);
+			adjustPlayer.autoNextPlist(setting.autoNextPlist);
 			adjustPlayer.hideDanmuku(setting.hideDanmuku, setting.hideDanmukuType);
 
 			if (isReload) {
@@ -2247,6 +2255,7 @@
             		<legend><label>播放视频</label></legend>
             		<div class="block">
             			<label fname="autoPlay"><input name="autoPlay" type="checkbox"><span class="checkbox"></span>自动播放视频</label>
+				<label fname="autoNextPlist"><input name="autoNextPlist" type="checkbox"><span class="checkbox"></span>自动播放下一个视频<span tooltip="使用帮助：&#10;1：此选项启用后将无视“B站”HTML5播放器自带的“自动换P功能”&#10;2：自动跳过“承包榜”、“充电名单”" class="tipsButton">[?]</span></label>
             			<label fname="autoLoopVideo"><input name="autoLoopVideo" type="checkbox"><span class="checkbox"></span>自动循环播放当前视频</label>
 						<label fname="skipSetTime" class="multiLine"><input name="skipSetTime" type="checkbox" action="childElementDisabledEvent" disabledChildElement="input,skipSetTimeValueMinutes;skipSetTimeValueSeconds" ><span class="checkbox"></span>自动从指定时间开始播放
             			<div class="newLine">
@@ -2306,7 +2315,6 @@
 							<span tooltip="使用帮助：&#10;1：开启“修改迷你播放器宽度”后，拖动迷你播放器右下角调节按钮，可以调整大小。&#10;2：此功能是“实验功能”，部分页面可能不起作用" class="tipsButton">[?]</span>
 						</div></label>
 						<label fname="autoLightOn"><input name="autoLightOn" type="checkbox"><span class="checkbox"></span>自动播放器关灯<span tooltip="使用帮助：&#10;1：在视频区域内点击右键进行开，关灯操作&#10;2：双击黑暗区域开灯。" class="tipsButton">[?]</span></label>
-						<label fname="autoSkipElectric"><input name="autoSkipElectric" type="checkbox"><span class="checkbox"></span>自动跳过充电榜</label>
             		</div>
             	</fieldset>
             </div>
