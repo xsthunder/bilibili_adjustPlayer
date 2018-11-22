@@ -2,7 +2,7 @@
 // @name        哔哩哔哩（bilibili.com）播放器调整R（ver.stardust）
 // @namespace   stardust
 // @author      kkren
-// @license     MIT License
+// @license     GPL-3.0-or-later
 // @homepageURL https://github.com/kkren/bilibili_adjustPlayer
 // @include     http*://www.bilibili.com/video/av*
 // @description 调整B站播放器设置，增加一些实用的功能。原作者为mickey7q7。
