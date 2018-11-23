@@ -351,22 +351,7 @@
 								childList: true
 							});
 						}
-					} else if (matchURL.isWatchlater()) {
-							var observer = new MutationObserver(function(records) {
-								records.map(function(record) {
-									var targetNode = record.target.getAttribute("class");
-									if (targetNode.search("video-state-pause") !== -1) {
-										nextPlist();
-										observer.disconnect();
-									}
-								});
-							});
-							observer.observe(document.querySelector('#bofqi .bilibili-player-area'), {
-								attributes: true,
-								attributeFilter: ['class'],
-								childList: true
-							});
-                    			} else if (matchURL.isOldBangumi() || matchURL.isNewBangumi()) {
+					} else if (matchURL.isOldBangumi() || matchURL.isNewBangumi()) {
 						if (isBangumi('.bilibili-player-bangumipay-panel') === null) {
 							video.addEventListener('ended', function() {
 								nextPlist();
@@ -387,6 +372,10 @@
 								childList: true
 							});
 						}
+					} else if (matchURL.isWatchlater()) {
+						video.addEventListener('ended', function() {
+							nextPlist();
+						}, false);
 					}
 				} catch (e) {
 					console.log('autoNextPlist：' + e);
