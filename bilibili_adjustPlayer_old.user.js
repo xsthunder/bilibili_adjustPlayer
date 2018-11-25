@@ -12,7 +12,7 @@
 // @include     http*://bangumi.bilibili.com/movie/*
 // @exclude     http*://bangumi.bilibili.com/movie/
 // @description 调整B站播放器设置，增加一些实用的功能。
-// @version     1.53.1
+// @version     1.53.2
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
@@ -1975,7 +1975,7 @@
 		getPListId: function(href) {
 			var id;
 			if (typeof href !== 'undefined') {
-				id = href.match(/p=\d*/g) || href.match(/#page=\d*/g) || href.match(/ep\d*/g) || href.match(/ss\d*#\d*/g) || href.match(/watchlater\/#\/av\d*\/p\d*/g) || href.match(/av\d*/g);
+				id = href.match(/ep\d*/g) || href.match(/p=\d*/g) || href.match(/#page=\d*/g) || href.match(/ss\d*#\d*/g);
 				if (id !== null) {
 					id = id[0].replace(/\D/g, '');
 				} else {
