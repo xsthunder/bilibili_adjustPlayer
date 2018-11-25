@@ -12,7 +12,7 @@
 // @include     http*://bangumi.bilibili.com/movie/*
 // @exclude     http*://bangumi.bilibili.com/movie/
 // @description 调整B站播放器设置，增加一些实用的功能。
-// @version     1.53.2
+// @version     1.53.1
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
@@ -2017,33 +2017,28 @@
 					var targetNode = records[i].target;
 					if (targetNode !== null) {
 						var isReload = false;
-						var reloadTimer = null;
-						clearTimeout(this.reloadTimer);
-						this.reloadTimer = window.setTimeout(function() {
-							if (isReload === false) {
-								var newPlistId, oldPListId;
-								newPlistId = reloadPList.getPListId(targetNode.baseURI);
-								oldPListId = window.adjustPlayerCurrentPListId;
-								if (newPlistId !== oldPListId) {
-									console.log('reloadPList:\nnewPlistId:' + newPlistId + "\noldPListId:" + oldPListId);
-									isReload = true;
-									observer.disconnect();
-									if (typeof GM_getValue === 'function') {
-										var setting = config.read();
-										adjustPlayer.reload(setting);
-									} else {
-										var setting = config.read();
-										setting.then(function(value) {
-											adjustPlayer.reload(value);
-										});
-									}
+						if (isReload === false) {
+							var newPlistId, oldPListId;
+							newPlistId = reloadPList.getPListId(targetNode.baseURI);
+							oldPListId = window.adjustPlayerCurrentPListId;
+							if (newPlistId !== oldPListId) {
+								console.log('reloadPList:\nnewPlistId:' + newPlistId + "\noldPListId:" + oldPListId);
+								isReload = true;
+								observer.disconnect();
+								if (typeof GM_getValue === 'function') {
+									var setting = config.read();
+									adjustPlayer.reload(setting);
 								} else {
-									reloadPList.getScreenMode();
+									var setting = config.read();
+									setting.then(function(value) {
+										adjustPlayer.reload(value);
+									});
 								}
+								break;
 							} else {
-								return;
+								reloadPList.getScreenMode();
 							}
-						}, 200);
+						}
 					}
 				}
 			});
