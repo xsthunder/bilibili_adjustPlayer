@@ -372,6 +372,10 @@
 								childList: true
 							});
 						}
+					} else if (matchURL.isWatchlater()) {
+						video.addEventListener('ended', function() {
+							nextPlist();
+						}, false);
 					}
 				} catch (e) {
 					console.log('autoNextPlist：' + e);
@@ -2013,28 +2017,33 @@
 					var targetNode = records[i].target;
 					if (targetNode !== null) {
 						var isReload = false;
-						if (isReload === false) {
-							var newPlistId, oldPListId;
-							newPlistId = reloadPList.getPListId(targetNode.baseURI);
-							oldPListId = window.adjustPlayerCurrentPListId;
-							if (newPlistId !== oldPListId) {
-								console.log('reloadPList:\nnewPlistId:' + newPlistId + "\noldPListId:" + oldPListId);
-								isReload = true;
-								observer.disconnect();
-								if (typeof GM_getValue === 'function') {
-									var setting = config.read();
-									adjustPlayer.reload(setting);
+						var reloadTimer = null;
+						clearTimeout(this.reloadTimer);
+						this.reloadTimer = window.setTimeout(function() {
+							if (isReload === false) {
+								var newPlistId, oldPListId;
+								newPlistId = reloadPList.getPListId(targetNode.baseURI);
+								oldPListId = window.adjustPlayerCurrentPListId;
+								if (newPlistId !== oldPListId) {
+									console.log('reloadPList:\nnewPlistId:' + newPlistId + "\noldPListId:" + oldPListId);
+									isReload = true;
+									observer.disconnect();
+									if (typeof GM_getValue === 'function') {
+										var setting = config.read();
+										adjustPlayer.reload(setting);
+									} else {
+										var setting = config.read();
+										setting.then(function(value) {
+											adjustPlayer.reload(value);
+										});
+									}
 								} else {
-									var setting = config.read();
-									setting.then(function(value) {
-										adjustPlayer.reload(value);
-									});
+									reloadPList.getScreenMode();
 								}
-								break;
 							} else {
-								reloadPList.getScreenMode();
+								return;
 							}
-						}
+						}, 200);
 					}
 				}
 			});

@@ -1575,7 +1575,7 @@
 					]).then(function(values) {
 						createMouseoverAndMouseoutEvent('hide', danmakuSettingLitePanel).then(function(value) {
 							if (value === 'hide') {
-								//adjustPlayer.hideDanmuku(setting.hideDanmuku, setting.hideDanmukuType);
+								adjustPlayer.hideDanmuku(setting.hideDanmuku, setting.hideDanmukuType);
 							}
 						});
 					});
@@ -1589,7 +1589,6 @@
 			adjustPlayer.autoVideoSpeed(setting.autoVideoSpeed, setting.autoVideoSpeedValue, video);
 			adjustPlayer.skipSetTime(setting.skipSetTime, setting.skipSetTimeValue, video);
 			adjustPlayer.autoNextPlist(setting.autoNextPlist);
-			adjustPlayer.hideDanmuku(setting.hideDanmuku, setting.hideDanmukuType);
 
 			if (isReload) {
 				var screenMode = sessionStorage.getItem("adjustPlayer_screenMode");
