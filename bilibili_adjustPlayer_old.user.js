@@ -12,7 +12,7 @@
 // @include     http*://bangumi.bilibili.com/movie/*
 // @exclude     http*://bangumi.bilibili.com/movie/
 // @description 调整B站播放器设置，增加一些实用的功能。
-// @version     1.53.1
+// @version     1.53.2
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
@@ -372,6 +372,10 @@
 								childList: true
 							});
 						}
+					} else if (matchURL.isWatchlater()) {
+						video.addEventListener('ended', function() {
+							nextPlist();
+						}, false);
 					}
 				} catch (e) {
 					console.log('autoNextPlist：' + e);
@@ -1975,7 +1979,7 @@
 		getPListId: function(href) {
 			var id;
 			if (typeof href !== 'undefined') {
-				id = href.match(/p=\d*/g) || href.match(/#page=\d*/g) || href.match(/ep\d*/g) || href.match(/ss\d*#\d*/g) || href.match(/watchlater\/#\/av\d*\/p\d*/g) || href.match(/av\d*/g);
+				id = href.match(/ep\d*/g) || href.match(/p=\d*/g) || href.match(/#page=\d*/g) || href.match(/ss\d*#\d*/g);
 				if (id !== null) {
 					id = id[0].replace(/\D/g, '');
 				} else {
@@ -2013,28 +2017,33 @@
 					var targetNode = records[i].target;
 					if (targetNode !== null) {
 						var isReload = false;
-						if (isReload === false) {
-							var newPlistId, oldPListId;
-							newPlistId = reloadPList.getPListId(targetNode.baseURI);
-							oldPListId = window.adjustPlayerCurrentPListId;
-							if (newPlistId !== oldPListId) {
-								console.log('reloadPList:\nnewPlistId:' + newPlistId + "\noldPListId:" + oldPListId);
-								isReload = true;
-								observer.disconnect();
-								if (typeof GM_getValue === 'function') {
-									var setting = config.read();
-									adjustPlayer.reload(setting);
+						var reloadTimer = null;
+						clearTimeout(this.reloadTimer);
+						this.reloadTimer = window.setTimeout(function() {
+							if (isReload === false) {
+								var newPlistId, oldPListId;
+								newPlistId = reloadPList.getPListId(targetNode.baseURI);
+								oldPListId = window.adjustPlayerCurrentPListId;
+								if (newPlistId !== oldPListId) {
+									console.log('reloadPList:\nnewPlistId:' + newPlistId + "\noldPListId:" + oldPListId);
+									isReload = true;
+									observer.disconnect();
+									if (typeof GM_getValue === 'function') {
+										var setting = config.read();
+										adjustPlayer.reload(setting);
+									} else {
+										var setting = config.read();
+										setting.then(function(value) {
+											adjustPlayer.reload(value);
+										});
+									}
 								} else {
-									var setting = config.read();
-									setting.then(function(value) {
-										adjustPlayer.reload(value);
-									});
+									reloadPList.getScreenMode();
 								}
-								break;
 							} else {
-								reloadPList.getScreenMode();
+								return;
 							}
-						}
+						}, 200);
 					}
 				}
 			});

@@ -1575,7 +1575,7 @@
 					]).then(function(values) {
 						createMouseoverAndMouseoutEvent('hide', danmakuSettingLitePanel).then(function(value) {
 							if (value === 'hide') {
-								//adjustPlayer.hideDanmuku(setting.hideDanmuku, setting.hideDanmukuType);
+								adjustPlayer.hideDanmuku(setting.hideDanmuku, setting.hideDanmukuType);
 							}
 						});
 					});
@@ -1589,7 +1589,6 @@
 			adjustPlayer.autoVideoSpeed(setting.autoVideoSpeed, setting.autoVideoSpeedValue, video);
 			adjustPlayer.skipSetTime(setting.skipSetTime, setting.skipSetTimeValue, video);
 			adjustPlayer.autoNextPlist(setting.autoNextPlist);
-			adjustPlayer.hideDanmuku(setting.hideDanmuku, setting.hideDanmukuType);
 
 			if (isReload) {
 				var screenMode = sessionStorage.getItem("adjustPlayer_screenMode");
@@ -1807,44 +1806,48 @@
 			}
 		},
 		init: function() {
-			var pListId = reloadPList.getPListId(location.href);
-			window.adjustPlayerCurrentPListId = pListId;
+		    (function(history){
+			var pushState = history.pushState;
+			history.pushState = function(state) {
+			    if (typeof history.onpushstate == "function") {
+				history.onpushstate({state: state});
+			    }
+			    return pushState.apply(history, arguments);
+			};
+		    })(window.history);
 
-			var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
-			var observer = new MutationObserver(function(records) {
-				for (var i = 0; i < records.length; i++) {
-					var targetNode = records[i].target;
-					if (targetNode !== null) {
-						var isReload = false;
-						if (isReload === false) {
-							var newPlistId, oldPListId;
-							newPlistId = reloadPList.getPListId(targetNode.baseURI);
-							oldPListId = window.adjustPlayerCurrentPListId;
-							if (newPlistId !== oldPListId) {
-								console.log('reloadPList:\nnewPlistId:' + newPlistId + "\noldPListId:" + oldPListId);
-								isReload = true;
-								observer.disconnect();
-								if (typeof GM_getValue === 'function') {
-									var setting = config.read();
-									adjustPlayer.reload(setting);
-								} else {
-									var setting = config.read();
-									setting.then(function(value) {
-										adjustPlayer.reload(value);
-									});
-								}
-								break;
-							} else {
-								reloadPList.getScreenMode();
-							}
-						}
-					}
+		    var pListId = reloadPList.getPListId(location.href);
+				window.adjustPlayerCurrentPListId = pListId;
+
+		    window.onpopstate = history.onpushstate = function(e) {
+			var isReload = false;
+			var reloadTimer = null;
+			clearTimeout(this.reloadTimer);
+			this.reloadTimer = window.setTimeout(function() {
+			    if (isReload === false) {
+				var newPlistId, oldPListId;
+				newPlistId = reloadPList.getPListId(location.href);
+				oldPListId = window.adjustPlayerCurrentPListId;
+				if (newPlistId !== oldPListId) {
+				    console.log('reloadPList:\nnewPlistId:' + newPlistId + "\noldPListId:" + oldPListId);
+				    isReload = true;
+				    if (typeof GM_getValue === 'function') {
+					var setting = config.read();
+					adjustPlayer.reload(setting);
+				    } else {
+					var setting = config.read();
+					setting.then(function(value) {
+					    adjustPlayer.reload(value);
+					});
+				    }
+				} else {
+				    reloadPList.getScreenMode();
 				}
-			});
-			observer.observe(document.querySelector('#bofqi'), {
-				attributes: true,
-				childList: true
-			});
+			    } else {
+				return;
+			    }
+			}, 200);
+		    }
 		}
 	};
 	var config = {
