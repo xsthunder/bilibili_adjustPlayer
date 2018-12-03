@@ -6,7 +6,7 @@
 // @homepageURL https://github.com/kkren/bilibili_adjustPlayer
 // @include     http*://www.bilibili.com/video/av*
 // @description 调整B站播放器设置，增加一些实用的功能。原作者为mickey7q7。
-// @version     stardust_2.10.0
+// @version     stardust_2.10.1
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
@@ -175,11 +175,11 @@
 					if (controlBtn !== null) {
 
 						createMouseoverAndMouseoutEvent('show', controlBtn);
-                        			createMouseoverAndMouseoutEvent('hide', controlBtn);
-						
+						createMouseoverAndMouseoutEvent('hide', controlBtn);
+
 						var chooseDanmaku = querySelectorFromIframe('.bilibili-player-video-danmaku-root .bilibili-player-video-danmaku-switch .choose_danmaku');
 						if (chooseDanmaku.innerHTML === "关闭弹幕") {
-						  	doClick(controlBtn);
+							doClick(controlBtn);
 							console.log("hide danmu");
 						}
 					}
@@ -287,7 +287,7 @@
 				var video = querySelectorFromIframe('.bilibili-player-video > video:nth-child(1)')
 				video.addEventListener("ended", function(e) {
 					var paused = querySelectorFromIframe('.video-state-pause');
-                    			var nextBtn = querySelectorFromIframe('.bilibili-player-video-btn-next');
+					var nextBtn = querySelectorFromIframe('.bilibili-player-video-btn-next');
 
 					if (paused !== null && nextBtn !== null) {
 						doClick(nextBtn);
@@ -452,7 +452,7 @@
 						timerCount++;
 
 						contextMenuClick(querySelectorFromIframe('.bilibili-player-area > .bilibili-player-video-wrap'));
-						var status = clickLightOnOff(querySelectorFromIframe('.bilibili-player-context-menu-container'));
+						var status = clickLightOnOff(querySelectorFromIframe('.bilibili-player-context-menu-origin'));
 						heimuDblclickEvent();
 						if (type === "ON" || typeof type === 'undefined') {
 							if (status === "关灯") {
