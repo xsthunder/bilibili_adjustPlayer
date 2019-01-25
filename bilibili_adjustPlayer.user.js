@@ -6,7 +6,7 @@
 // @homepageURL https://github.com/kkren/bilibili_adjustPlayer
 // @include     http*://www.bilibili.com/video/av*
 // @description 调整B站播放器设置，增加一些实用的功能。原作者为mickey7q7。
-// @version     stardust_2.10.1
+// @version     2.10.2
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
@@ -15,12 +15,12 @@
 // @run-at      document-end
 // ==/UserScript==
 
-(function() {
+(function () {
 	'use strict';
 	var adjustPlayer = {
-		autoWidescreen: function(set, fullscreen) {
+		autoWidescreen: function (set, fullscreen) {
 			if (typeof set !== 'undefined') {
-				var autoWidescreen = function() {
+				var autoWidescreen = function () {
 					var widescreenBtn = querySelectorFromIframe('.bilibili-player-video-btn-widescreen');
 					if (widescreenBtn !== null) {
 						var screenMode = sessionStorage.getItem("adjustPlayer_screenMode");
@@ -46,9 +46,9 @@
 				}
 			}
 		},
-		fixWidescreenFocusPlayer: function(setting, isReload, autoWidescreenCallback) {
+		fixWidescreenFocusPlayer: function (setting, isReload, autoWidescreenCallback) {
 			var timerCount = 0;
-			var timer = window.setInterval(function() {
+			var timer = window.setInterval(function () {
 				if (timerCount >= 20) {
 					clearInterval(timer);
 				}
@@ -62,8 +62,8 @@
 				}
 			}, 200);
 
-			var fixWidescreenFocusPlayer = function() {
-				var callback = function() {
+			var fixWidescreenFocusPlayer = function () {
+				var callback = function () {
 					if (typeof autoWidescreenCallback === 'function') {
 						if (isReload) {
 							autoWidescreenCallback(true, setting.autoWidescreenFullscreen);
@@ -79,7 +79,7 @@
 					//adjustPlayer.autoFocusPlayer(true, setting.autoFocusPlayerOffsetType, setting.autoFocusPlayerOffsetValue);
 					return;
 				} else if (setting.resizePlayer) {
-					unsafeWindow.PlayerAgent.player_widewin = function() {
+					unsafeWindow.PlayerAgent.player_widewin = function () {
 						adjustPlayer.autoFocusPlayer(true, setting.autoFocusPlayerOffsetType, setting.autoFocusPlayerOffsetValue);
 					};
 					callback();
@@ -89,11 +89,11 @@
 				}
 			};
 		},
-		autoFocusPlayer: function(set, offsetType, offsetValue, isShortcut) {
+		autoFocusPlayer: function (set, offsetType, offsetValue, isShortcut) {
 			if (typeof set !== 'undefined') {
 				try {
-					var focusPlayer = function() {
-						setTimeout(function() {
+					var focusPlayer = function () {
+						setTimeout(function () {
 							var playerWrapper;
 							var scrollToY;
 							if (matchURL.isVideoAV()) {
@@ -121,7 +121,7 @@
 						}, 200);
 					};
 					var timerCount = 0;
-					var timer = window.setInterval(function() {
+					var timer = window.setInterval(function () {
 						if (timerCount >= 20) {
 							clearInterval(timer);
 						}
@@ -154,23 +154,25 @@
 				}
 			}
 		},
-		autoPlay: function(set, video) {
-			if (typeof set !== 'undefined' && video !== null) {
-				if (video.play) {
-					video.play();
-				}
-			}
-		},
-		chooseQuality: function(set, video) {
-			if (typeof set !== 'undefined' && video !== null) {
-				if (video.play) {
-					video.play();
-				}
-			}
-		},
-		hideDanmuku: function(set, type) {
+		// autoPlay: function (set, video) {
+		// 	if (typeof set !== 'undefined' && video !== null) {
+		// 		if (video.play) {
+		// 			video.play();
+		// 		}
+		// 	}
+		// },
+		// bilibili auto play by default
+		startFromHistory: function (set, type) {
 			if (typeof set !== 'undefined') {
-				var hideDanmuku = function() {
+				var jumpBtn = querySelectorFromIframe('div.bilibili-player-video-toast-item-jump');
+				if (jumpBtn !== null){
+					doClick(jumpBtn);
+				}
+			}
+		},
+		hideDanmuku: function (set, type) {
+			if (typeof set !== 'undefined') {
+				var hideDanmuku = function () {
 					var controlBtn = querySelectorFromIframe('.bilibili-player-video-sendbar .bilibili-player-video-danmaku-root .bilibili-player-video-danmaku-switch > input');
 					if (controlBtn !== null) {
 
@@ -198,9 +200,9 @@
 				}
 			}
 		},
-		hideDanmukuFilterType: function(set, type) {
+		hideDanmukuFilterType: function (set, type) {
 			if (typeof set !== 'undefined') {
-				var hideDanmukuFilterType = function(ftype) {
+				var hideDanmukuFilterType = function (ftype) {
 					var controlBtn = querySelectorFromIframe('.bilibili-player-video-danmaku-setting-left-block-content .bilibili-player-block-filter-type[ftype=' + ftype + ']');
 					if (controlBtn !== null) {
 						doClick(controlBtn);
@@ -211,7 +213,7 @@
 				};
 
 				if (typeof type !== 'undefined') {
-					return new Promise(function(resolve, reject) {
+					return new Promise(function (resolve, reject) {
 						if (type === 'topAndbottom') {
 							hideDanmukuFilterType('top');
 							hideDanmukuFilterType('bottom');
@@ -223,10 +225,10 @@
 				}
 			}
 		},
-		danmukuPreventShade: function(set, type) {
+		danmukuPreventShade: function (set, type) {
 			if (typeof set !== 'undefined' && typeof type !== 'undefined') {
 				try {
-					var isDanmukuPreventShadeCheckboxSelected = function(ftype) {
+					var isDanmukuPreventShadeCheckboxSelected = function (ftype) {
 						var elem = querySelectorFromIframe('.bilibili-player-video-danmaku-setting-left-preventshade-box .bui-checkbox-label .bui-checkbox-icon-selected');
 						var theCSSprop = window.getComputedStyle(elem, null).getPropertyValue("display");
 						if (theCSSprop === 'block') {
@@ -235,10 +237,10 @@
 							return false;
 						}
 					};
-					var danmukuPreventShade = function() {
+					var danmukuPreventShade = function () {
 						var controlBtn = querySelectorFromIframe('.bilibili-player-video-danmaku-setting-left-preventshade input[type="checkbox"]');
 						if (controlBtn !== null) {
-							return new Promise(function(resolve, reject) {
+							return new Promise(function (resolve, reject) {
 								doClick(controlBtn);
 								resolve('danmukuPreventShade done');
 							});
@@ -259,7 +261,7 @@
 				}
 			}
 		},
-		tabDanmulist: function(set) {
+		tabDanmulist: function (set) {
 			if (typeof set !== 'undefined') {
 				try {
 					var timerCount = 0;
@@ -282,10 +284,10 @@
 				}
 			}
 		},
-		autoNextPlist: function(set) {
+		autoNextPlist: function (set) {
 			if (typeof set !== 'undefined') {
 				var video = querySelectorFromIframe('.bilibili-player-video > video:nth-child(1)')
-				video.addEventListener("ended", function(e) {
+				video.addEventListener("ended", function (e) {
 					var paused = querySelectorFromIframe('.video-state-pause');
 					var nextBtn = querySelectorFromIframe('.bilibili-player-video-btn-next');
 
@@ -295,7 +297,7 @@
 				})
 			}
 		},
-		autoLoopVideo: function(set) {
+		autoLoopVideo: function (set) {
 			if (typeof set !== 'undefined') {
 				var controlBtn = querySelectorFromIframe('.bilibili-player-video-btn-repeat');
 				if (controlBtn !== null) {
@@ -306,7 +308,7 @@
 				}
 			}
 		},
-		autoWebFullScreen: function(set) {
+		autoWebFullScreen: function (set) {
 			if (typeof set !== 'undefined') {
 				var controlBtn = querySelectorFromIframe('.bilibili-player-video-web-fullscreen > i');
 				if (controlBtn !== null) {
@@ -317,31 +319,31 @@
 				}
 			}
 		},
-		doubleClickFullScreen: function(set, delayed) {
+		doubleClickFullScreen: function (set, delayed) {
 			if (typeof set !== 'undefined' && typeof delayed !== 'undefined') {
 				try {
 					var fullScreenBtn = querySelectorFromIframe('.bilibili-player-video-btn-fullscreen');
 					if (delayed === 0) {
 						var video = querySelectorFromIframe('.bilibili-player-video video');
-						video.addEventListener('dblclick', function() {
+						video.addEventListener('dblclick', function () {
 							if (fullScreenBtn !== null) {
 								doClick(fullScreenBtn);
 							}
 						});
 					} else {
-						var videoParentNodeEvent = function() {
+						var videoParentNodeEvent = function () {
 							var dblclickTimer = null;
 							var videoParentNode = querySelectorFromIframe('.bilibili-player-video');
-							videoParentNode.addEventListener('click', function() {
+							videoParentNode.addEventListener('click', function () {
 								clearTimeout(this.dblclickTimer);
-								this.dblclickTimer = setTimeout(function() {
+								this.dblclickTimer = setTimeout(function () {
 									var playPauseBtn = querySelectorFromIframe('.bilibili-player-video-btn-start');
 									if (playPauseBtn !== null) {
 										doClick(playPauseBtn);
 									}
 								}, delayed);
 							});
-							videoParentNode.addEventListener('dblclick', function() {
+							videoParentNode.addEventListener('dblclick', function () {
 								clearTimeout(this.dblclickTimer);
 								if (fullScreenBtn !== null) {
 									doClick(fullScreenBtn);
@@ -380,7 +382,7 @@
 				}
 			}
 		},
-		autoVideoSpeed: function(set, speed, video) {
+		autoVideoSpeed: function (set, speed, video) {
 			if (typeof set !== 'undefined' && video !== null) {
 				try {
 					var adjustPlayerVideoPlaybackRate = sessionStorage.getItem("adjustPlayer_videoPlaybackRate");
@@ -389,7 +391,7 @@
 						return;
 					}
 					var timerCount = 0;
-					var timer = window.setInterval(function() {
+					var timer = window.setInterval(function () {
 						if ((timerCount >= 20) || video.playbackRate == speed) {
 							clearInterval(timer);
 						}
@@ -404,7 +406,7 @@
 				}
 			}
 		},
-		autoLightOn: function(set, type, callback) {
+		autoLightOn: function (set, type, callback) {
 			if (typeof set !== 'undefined') {
 				try {
 					var isActiveContextMenu = querySelectorFromIframe('.bilibili-player-context-menu-container.black');
@@ -412,7 +414,7 @@
 						return;
 					}
 
-					var clickLightOnOff = function(controlBtn) {
+					var clickLightOnOff = function (controlBtn) {
 						if (controlBtn !== null) {
 							var tipsText = null;
 							var lightOnOffItem = null;
@@ -433,11 +435,11 @@
 						}
 					};
 
-					var heimuDblclickEvent = function() {
+					var heimuDblclickEvent = function () {
 						var heimu = document.querySelector('#heimu');
 						var isDblclickEvent = heimu.getAttribute("heimuDblclick");
 						if (isDblclickEvent === null) {
-							heimu.addEventListener('dblclick', function() {
+							heimu.addEventListener('dblclick', function () {
 								heimu.setAttribute("style", "display: none;");
 							});
 							heimu.setAttribute("heimuDblclick", "true");
@@ -472,10 +474,10 @@
 				}
 			}
 		},
-		resizePlayer: function(set, width, ratio, videoInfoAndUpInfoPosition, isAutohideControlbar) {
+		resizePlayer: function (set, width, ratio, videoInfoAndUpInfoPosition, isAutohideControlbar) {
 			if (typeof set !== 'undefined' && typeof width !== 'undefined') {
 				try {
-					var resizePlayer = function() {
+					var resizePlayer = function () {
 						var screenMode = sessionStorage.getItem("adjustPlayer_screenMode");
 						var playerCustomWidth = width + 'px';
 						var playerNormalModeWidth = 'calc(' + playerCustomWidth + ' - 350px - 30px )';
@@ -573,12 +575,12 @@
 							}
 						}
 					};
-					var fixSwitchScreenMode = function() {
+					var fixSwitchScreenMode = function () {
 						var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
-						var observer = new MutationObserver(function(records) {
-							records.map(function(record) {
+						var observer = new MutationObserver(function (records) {
+							records.map(function (record) {
 								var resizeTimer;
-								resizeTimer = setTimeout(function() {
+								resizeTimer = setTimeout(function () {
 									clearTimeout(this.resizeTimer);
 									resizePlayer();
 								}, 200);
@@ -591,7 +593,7 @@
 					}
 					var player = isPlayer();
 					if (player === "html5Player") {
-						setTimeout(function() {
+						setTimeout(function () {
 							if (document.querySelector('#adjustPlayerSize') !== null) {
 								fixSwitchScreenMode();
 								return;
@@ -606,9 +608,9 @@
 				}
 			}
 		},
-		resizeMiniPlayer: function(set, width, isResizable) {
+		resizeMiniPlayer: function (set, width, isResizable) {
 			if (typeof set !== 'undefined' && typeof width !== 'undefined') {
-				var resize = function() {
+				var resize = function () {
 					var css = [
 						'#bofqi.mini-player, #bofqi.mini-player:before , #bofqi.mini-player .player { width: ' + width + 'px !important; height: calc(' + width + 'px / calc(16 / 9)) !important; }',
 						'#adjust-player-miniplayer-resizable { width: ' + width + 'px ; height: calc(' + width + 'px / calc(16 / 9)) !important; position: absolute; top: 0px; z-index: 0; overflow: hidden; resize: both; min-height:100px; min-width:100px; }',
@@ -626,7 +628,7 @@
 					document.documentElement.appendChild(node);
 				};
 
-				var resizable = function(initResize) {
+				var resizable = function (initResize) {
 					//console.log("resizable");
 					var resizableElement = document.createElement('div');
 					resizableElement.id = "adjust-player-miniplayer-resizable";
@@ -644,7 +646,7 @@
 						var requestId;
 						var loopTimer;
 
-						var dragEvent = function(width, height) {
+						var dragEvent = function (width, height) {
 							var css = [
 								'#bofqi.mini-player, #bofqi.mini-player:before , #bofqi.mini-player .player { width: ' + width + 'px !important; height: ' + height + 'px !important; }',
 								'#adjust-player-miniplayer-resizable { position: absolute; top: 0; z-index: 1; overflow: hidden; resize: both; min-height:100px; min-width:100px;width: ' + width + 'px; height: ' + height + 'px; }',
@@ -687,22 +689,22 @@
 								requestId = undefined;
 							}
 						}
-						resizableElement.addEventListener("mouseup", function(e) {
+						resizableElement.addEventListener("mouseup", function (e) {
 							stop();
 						}, false);
-						resizableElement.addEventListener("mousedown", function(e) {
+						resizableElement.addEventListener("mousedown", function (e) {
 							if (e.buttons === 1) {
 								if ((resizableElement.clientWidth - 10) < e.offsetX && (resizableElement.clientHeight - 10) < e.offsetY) {
 									start();
-									loopTimer = window.setTimeout(function() {
+									loopTimer = window.setTimeout(function () {
 										clearTimeout(this.loopTimer);
 										var resizableElementStyle = resizableElement.getAttribute('class');
 										if (resizableElementStyle === 'show') {
-											var fixUndersize = function() {
+											var fixUndersize = function () {
 												clearTimeout(loopTimer);
 												resizableElement.setAttribute('style', 'width:320px;height:180px;');
 												start();
-												loopTimer = window.setTimeout(function() {
+												loopTimer = window.setTimeout(function () {
 													stop();
 												}, 5000);
 											};
@@ -734,7 +736,7 @@
 					}
 				};
 
-				var miniPlayerHideShow = function(type) {
+				var miniPlayerHideShow = function (type) {
 					var scrollResizeTimer;
 					var adjustMiniPlayerSizeResizable = document.querySelector("#adjust-player-miniplayer-resizable");
 					if (type === "hide") {
@@ -756,7 +758,7 @@
 							}
 						}
 					}
-					scrollResizeTimer = window.setTimeout(function() {
+					scrollResizeTimer = window.setTimeout(function () {
 						clearTimeout(this.scrollResizeTimer);
 						var evt = document.createEvent('Event');
 						evt.initEvent('resize', true, true);
@@ -764,8 +766,8 @@
 					}, 800);
 				};
 
-				var miniPlayerHideShowEvent = function() {
-					var initResize = function(isMiniPlayer) {
+				var miniPlayerHideShowEvent = function () {
+					var initResize = function (isMiniPlayer) {
 						var player = isPlayer();
 						if (player === "html5Player") {
 							if (isMiniPlayer) {
@@ -805,8 +807,8 @@
 					initResize(isMiniPlayer);
 
 					var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
-					var observer = new MutationObserver(function(records) {
-						records.map(function(record) {
+					var observer = new MutationObserver(function (records) {
+						records.map(function (record) {
 							if (record.target.getAttribute("class").search("mini-player") !== -1) {
 								isMiniPlayer = true;
 							} else {
@@ -823,7 +825,7 @@
 				miniPlayerHideShowEvent();
 			}
 		},
-		autoHideSendbar: function(set, focusDanmakuInput, video) {
+		autoHideSendbar: function (set, focusDanmakuInput, video) {
 			if (typeof set !== 'undefined') {
 				try {
 					if (querySelectorFromIframe('#adjustPlayerAutoHideSendbar')) {
@@ -831,7 +833,7 @@
 					}
 
 					//开启了“自动隐藏播放器控制栏”并设置了“定位到弹幕框的快捷键”之后，鼠标移动到弹幕框时不显示“弹幕框”
-					var isFocusDanmakuInput = function() {
+					var isFocusDanmakuInput = function () {
 						var css = '';
 						if (focusDanmakuInput) {
 							css = '#bilibiliPlayer.mode-webfullscreen .bilibili-player-video-sendbar, #bilibiliPlayer.mode-widescreen .bilibili-player-video-sendbar { visibility: hidden; }';
@@ -862,9 +864,9 @@
 				}
 			}
 		},
-		videoSeekingShowSendbar: function(set, video) {
+		videoSeekingShowSendbar: function (set, video) {
 			if (typeof set !== 'undefined' && video !== null) {
-				video.addEventListener("seeking", function() {
+				video.addEventListener("seeking", function () {
 					var controlBar = querySelectorFromIframe('#bilibiliPlayer .bilibili-player-video-control-wrap');
 					var controlMask = querySelectorFromIframe('#bilibiliPlayer .bilibili-player-video-control-mask');
 					var visibleStyle = "opacity: 1; visibility: visible; ";
@@ -873,7 +875,7 @@
 						controlMask.style = visibleStyle;
 						var timer = null;
 						clearTimeout(this.timer);
-						this.timer = setTimeout(function() {
+						this.timer = setTimeout(function () {
 							if (controlBar !== null) {
 								controlBar.style = "";
 								controlMask.style = "";
@@ -883,9 +885,9 @@
 				}, true);
 			}
 		},
-		skipSetTime: function(set, skipTime, video) {
+		skipSetTime: function (set, skipTime, video) {
 			if (typeof set !== 'undefined' && video !== null) {
-				var setTime = function() {
+				var setTime = function () {
 					var vLength = video.duration.toFixed();
 					//console.log(skipTime);
 					try {
@@ -903,9 +905,9 @@
 				setTime();
 			}
 		},
-		shortcuts: function(set) {
+		shortcuts: function (set) {
 			var shortcut = {
-				playPause: function() {
+				playPause: function () {
 					var video = querySelectorFromIframe('.bilibili-player-video video');
 					var button = querySelectorFromIframe('.bilibili-player-video-btn-start');
 					if (video !== null) {
@@ -918,7 +920,7 @@
 						}
 					}
 				},
-				videoFramerate: function(type) {
+				videoFramerate: function (type) {
 					var video = querySelectorFromIframe('.bilibili-player-video video');
 					var framerate = 24;
 					if (video !== null) {
@@ -956,14 +958,14 @@
 						}
 					}
 				},
-				showHideDanmuku: function() {
+				showHideDanmuku: function () {
 					var controlBtn = querySelectorFromIframe('.bilibili-player-video-sendbar .bilibili-player-video-danmaku-root .bilibili-player-video-danmaku-switch > input');
 					createMouseoverAndMouseoutEvent('show', controlBtn);
 					createMouseoverAndMouseoutEvent('hide', controlBtn);
-					setTimeout(function() {
+					setTimeout(function () {
 						if (controlBtn !== null) {
 							doClick(controlBtn);
-							var tipsValue = function() {
+							var tipsValue = function () {
 								var chooseDanmaku = querySelectorFromIframe('.bilibili-player-video-danmaku-root .bilibili-player-video-danmaku-switch .choose_danmaku');
 								if (chooseDanmaku.innerHTML === "关闭弹幕") {
 									return "打开弹幕";
@@ -975,7 +977,7 @@
 						}
 					}, 200);
 				},
-				videoSpeed: function(type) {
+				videoSpeed: function (type) {
 					var video = querySelectorFromIframe('.bilibili-player-video video');
 					if (video !== null) {
 						var videoSpeed = video.playbackRate;
@@ -1018,13 +1020,13 @@
 						sessionStorage.setItem("adjustPlayer_videoPlaybackRate", video.playbackRate);
 					}
 				},
-				playerWide: function() {
+				playerWide: function () {
 					var widescreenBtn = querySelectorFromIframe('.bilibili-player-video-btn-widescreen');
 					if (widescreenBtn !== null) {
 						doClick(widescreenBtn);
 					}
 
-					var tipsValue = function() {
+					var tipsValue = function () {
 						var screenMode = sessionStorage.getItem("adjustPlayer_screenMode");
 						if (screenMode === "fullscreen") {
 							return "全屏状态下无法使用";
@@ -1037,12 +1039,12 @@
 
 					shortcut.shortcutsTips("宽屏模式", tipsValue());
 				},
-				fullscreen: function() {
+				fullscreen: function () {
 					var controlBtn = querySelectorFromIframe('.bilibili-player-video-btn-fullscreen');
 					if (controlBtn !== null) {
 						doClick(controlBtn);
 
-						var tipsValue = function() {
+						var tipsValue = function () {
 							if (isFullscreen()) {
 								return "退出全屏";
 							} else {
@@ -1053,12 +1055,12 @@
 						shortcut.shortcutsTips("全屏", tipsValue());
 					}
 				},
-				webfullscreen: function() {
+				webfullscreen: function () {
 					var controlBtn = querySelectorFromIframe('.bilibili-player-video-web-fullscreen > i');
 					if (controlBtn !== null) {
 						doClick(controlBtn);
 
-						var tipsValue = function() {
+						var tipsValue = function () {
 							var screenMode = sessionStorage.getItem("adjustPlayer_screenMode");
 							if (screenMode === "webfullscreen") {
 								return "退出网页全屏";
@@ -1070,7 +1072,7 @@
 						shortcut.shortcutsTips("网页全屏", tipsValue());
 					}
 				},
-				gotoPlist: function(type) {
+				gotoPlist: function (type) {
 					var video = querySelectorFromIframe('.bilibili-player-video video');
 					if (video !== null) {
 						var plist, nextPlist, prevPlist, curPage;
@@ -1093,7 +1095,7 @@
 											prevPaging = prevPaging.previousElementSibling;
 											if (prevPaging !== null) {
 												doClick(prevPaging);
-												setTimeout(function() {
+												setTimeout(function () {
 													var curList = document.querySelector('#multi_page .cur-list li:last-child a[href]');
 													doClick(curList);
 												}, 200);
@@ -1127,7 +1129,7 @@
 											nextPaging = nextPaging.nextElementSibling;
 											if (nextPaging !== null) {
 												doClick(nextPaging);
-												setTimeout(function() {
+												setTimeout(function () {
 													var curList = document.querySelector('#multi_page .cur-list li:first-child a[href]');
 													doClick(curList);
 												}, 200);
@@ -1153,12 +1155,12 @@
 						}
 					}
 				},
-				videoMute: function() {
+				videoMute: function () {
 					var controlBtn = querySelectorFromIframe('.bilibili-player-video-btn-volume');
 					if (controlBtn !== null) {
 						doClick(controlBtn.querySelector('.bilibili-player-iconfont-volume'));
 
-						var tipsValue = function() {
+						var tipsValue = function () {
 							if (controlBtn.className.search("video-state-volume-min") !== -1) {
 								return "静音";
 							} else {
@@ -1169,8 +1171,8 @@
 						shortcut.shortcutsTips("静音", tipsValue());
 					}
 				},
-				lightOnOff: function() {
-					var isHeimuExist = function() {
+				lightOnOff: function () {
+					var isHeimuExist = function () {
 						var flag = false;
 						if (matchURL.isVideoAV() || matchURL.isWatchlater()) {
 							var heimu = document.querySelector('#heimu');
@@ -1194,7 +1196,7 @@
 						return flag;
 					};
 
-					var tipsValue = function() {
+					var tipsValue = function () {
 						if (isHeimuExist()) {
 							return "开灯";
 						} else {
@@ -1204,19 +1206,19 @@
 
 					adjustPlayer.autoLightOn(true, "ONOFF", shortcut.shortcutsTips("开/关灯", tipsValue()));
 				},
-				loopVideoOnOff: function() {
+				loopVideoOnOff: function () {
 					var controlBtn = querySelectorFromIframe('.bilibili-player-video-btn-repeat');
 					if (controlBtn !== null) {
 						doClick(controlBtn);
 
-						setTimeout(function() {
+						setTimeout(function () {
 							var controllTooltip = querySelectorFromIframe('div.player-tooltips');
 							if (controllTooltip !== null) {
 								controllTooltip.style.display = "none";
 							}
 						}, 200);
 
-						var tipsValue = function() {
+						var tipsValue = function () {
 							var dataText = controlBtn.querySelector('.bilibili-player-video-btn-repeat span.bilibili-player-iconfont-repeat').getAttribute("data-text");
 							if (dataText !== '关闭洗脑循环') {
 								return "关闭";
@@ -1227,7 +1229,7 @@
 						shortcut.shortcutsTips("循环播放", tipsValue());
 					}
 				},
-				focusPlayer: function() {
+				focusPlayer: function () {
 					var controlBtn = document.body.getAttribute("adjustPlayerScrollToY");
 					if (controlBtn === null) {
 						var scrollToY = (window.pageYOffset || document.documentElement.scrollTop) - (document.documentElement.clientTop || 0);
@@ -1247,14 +1249,14 @@
 						document.body.removeAttribute("adjustPlayerScrollToY");
 					}
 				},
-				moveToPlayerFocus: function() {
+				moveToPlayerFocus: function () {
 					var videoFocus = querySelectorFromIframe('.bilibili-player-video-control');
 					if (videoFocus !== null) {
 						doClick(videoFocus);
 					}
 					shortcut.shortcutsTips("移动", "到播放器焦点");
 				},
-				focusDanmakuInput: function(e) {
+				focusDanmakuInput: function (e) {
 					var controlBtn = querySelectorFromIframe("input.bilibili-player-video-danmaku-input");
 					if (controlBtn !== null) {
 						var adjustPlayerAutoHideControlBar = querySelectorFromIframe("#adjustPlayerAutoHideSendbar");
@@ -1266,11 +1268,11 @@
 							sendbar.style = "opacity: 1 !important; visibility: visible !important; outline: none;";
 							sendbar.setAttribute("tabindex", "-1");
 
-							var sendbarBlurEvent = function(e) {
+							var sendbarBlurEvent = function (e) {
 								controlBtn.focus();
 								sendbar.removeEventListener('blur', sendbarBlurEvent, false);
 							};
-							var danmakuInputKeydownEvent = function(e) {
+							var danmakuInputKeydownEvent = function (e) {
 								if (e.keyCode == 9) {
 									querySelectorFromIframe('.bilibili-player-video video').focus();
 									querySelectorFromIframe(".bilibili-player-video-sendbar").style = "opacity: 1;";
@@ -1284,14 +1286,14 @@
 						}
 						e.preventDefault();
 
-						setTimeout(function() {
+						setTimeout(function () {
 							controlBtn.focus();
 						}, 200);
 
 						shortcut.shortcutsTips("定位", "到弹幕框焦点");
 					}
 				},
-				shortcutsTips: function(type, value) {
+				shortcutsTips: function (type, value) {
 					try {
 						var timeoutID;
 						clearTimeout(this.timeoutID);
@@ -1310,7 +1312,7 @@
 							tips.style = "display: block; width:auto; opacity: 1; margin-left:-" + (tips.offsetWidth / 2) + "px";
 						}
 
-						this.timeoutID = setTimeout(function() {
+						this.timeoutID = setTimeout(function () {
 							var adjustPlayerShortcutsTips = querySelectorFromIframe('#bilibiliPlayer > .bilibili-player-area > .bilibili-player-video-wrap > #adjust-player-shortcuts-tips');
 							if (adjustPlayerShortcutsTips !== null) {
 								adjustPlayerShortcutsTips.style = "display: block;width:auto;opacity: 0;";
@@ -1320,12 +1322,12 @@
 						console.log('shortcutsTips：' + e);
 					}
 				},
-				shortcutsEvent: function(type, kCode, event) {
+				shortcutsEvent: function (type, kCode, event) {
 					if (typeof kCode === 'undefined' || kCode === "" || kCode === null) {
 						return;
 					}
 
-					var isCombinationKey = function() {
+					var isCombinationKey = function () {
 						var keys = kCode.split("+");
 						if (keys.length > 1) {
 							keys[1] = parseInt(keys[1]);
@@ -1341,7 +1343,7 @@
 						}
 					};
 
-					var executeEvent = function() {
+					var executeEvent = function () {
 						switch (type) {
 							case "playPause":
 								shortcut.playPause();
@@ -1433,7 +1435,7 @@
 						}
 					}
 				},
-				init: function(set) {
+				init: function (set) {
 					if (typeof set !== 'undefined') {
 						try {
 							if (typeof set.shortcutsHideTips !== 'undefined') {
@@ -1484,7 +1486,7 @@
 									//arrowKeys
 									if (event.keyCode === 37 || event.keyCode === 38 || event.keyCode === 39 || event.keyCode === 40) {
 										//event.stopPropagation();
-										var videoFocus = function() {
+										var videoFocus = function () {
 											var videoControl = querySelectorFromIframe('.bilibili-player-video-control');
 											if (videoControl !== null) {
 												doClick(videoControl);
@@ -1547,7 +1549,7 @@
 			};
 			shortcut.init(set);
 		},
-		adjust: function(setting, isReload) {
+		adjust: function (setting, isReload) {
 			var video = querySelectorFromIframe('.bilibili-player-video video');
 			//给老版本初始化“双击全屏延时”的默认值
 			if (setting.doubleClickFullScreen === true && typeof setting.doubleClickFullScreenDelayed === 'undefined') {
@@ -1562,18 +1564,18 @@
 				adjustPlayer.resizeMiniPlayer(setting.resizeMiniPlayer, setting.resizeMiniPlayerSize, setting.resizeMiniPlayerSizeResizable);
 			}
 			//修复没开启“自动宽屏模式”自动关灯失效
-			setTimeout(function() {
+			setTimeout(function () {
 				adjustPlayer.autoLightOn(setting.autoLightOn);
 			}, 200);
 			//“隐藏弹幕”最后执行
 			var danmakuSettingLitePanel = querySelectorFromIframe('.bilibili-player-video-sendbar .bilibili-player-video-danmaku-root .bilibili-player-video-danmaku-setting .bp-svgicon');
-			createMouseoverAndMouseoutEvent('show', danmakuSettingLitePanel).then(function(value) {
+			createMouseoverAndMouseoutEvent('show', danmakuSettingLitePanel).then(function (value) {
 				if (value === 'show') {
 					Promise.all([
 						adjustPlayer.hideDanmukuFilterType(setting.hideDanmukuFilterType, setting.hideDanmukuFilterType_Type),
 						adjustPlayer.danmukuPreventShade(setting.danmukuPreventShade, setting.danmukuPreventShadeType)
-					]).then(function(values) {
-						createMouseoverAndMouseoutEvent('hide', danmakuSettingLitePanel).then(function(value) {
+					]).then(function (values) {
+						createMouseoverAndMouseoutEvent('hide', danmakuSettingLitePanel).then(function (value) {
 							if (value === 'hide') {
 								adjustPlayer.hideDanmuku(setting.hideDanmuku, setting.hideDanmukuType);
 							}
@@ -1585,14 +1587,15 @@
 			adjustPlayer.tabDanmulist(setting.tabDanmulist);
 			adjustPlayer.videoSeekingShowSendbar(setting.videoSeekingShowSendbar, video);
 			adjustPlayer.autoHideSendbar(setting.autoHideSendbar, setting.shortcuts.focusDanmakuInput, video);
-			adjustPlayer.autoPlay(setting.autoPlay, video);
+			//adjustPlayer.autoPlay(setting.autoPlay, video);
 			adjustPlayer.autoVideoSpeed(setting.autoVideoSpeed, setting.autoVideoSpeedValue, video);
 			adjustPlayer.skipSetTime(setting.skipSetTime, setting.skipSetTimeValue, video);
 			adjustPlayer.autoNextPlist(setting.autoNextPlist);
+			adjustPlayer.startFromHistory(setting.startFromHistory);
 
 			if (isReload) {
 				var screenMode = sessionStorage.getItem("adjustPlayer_screenMode");
-				setTimeout(function() {
+				setTimeout(function () {
 					if (screenMode === 'widescreen') {
 						adjustPlayer.fixWidescreenFocusPlayer(setting, isReload, adjustPlayer.autoWidescreen);
 						adjustPlayer.autoFocusPlayer(setting.autoFocusPlayer, setting.autoFocusPlayerOffsetType, setting.autoFocusPlayerOffsetValue);
@@ -1615,7 +1618,7 @@
 				adjustPlayer.shortcuts(setting.shortcuts);
 			}
 		},
-		init: function(firstrun, setting) {
+		init: function (firstrun, setting) {
 			unsafeWindow.adjustPlayerTest = true;
 			window.adjustPlayerSetting = setting;
 			//修复后台打开视频页面脚本加载失效
@@ -1624,7 +1627,7 @@
 				//初始化
 				console.log('adjustPlayer(ver.stardust):\n' + 'loadPage:' + location.href);
 				//显示帮助提示
-				var isFirstrun = function() {
+				var isFirstrun = function () {
 					if (firstrun) {
 						config.setValue('player_firstrun', false);
 						configWindow.help();
@@ -1713,7 +1716,7 @@
 				console.log("adjustPlayer:\n nonsupport the Page Visibility API.");
 			}
 		},
-		reload: function(setting) {
+		reload: function (setting) {
 			//多P页面重加载
 			console.log('adjustPlayer(ver.stardust):\n' + 'reloadPage:' + location.href);
 			//总计时器
@@ -1722,7 +1725,7 @@
 				var player = isPlayer();
 				if (player === "flashPlayer") {
 					try {
-						setTimeout(function() {
+						setTimeout(function () {
 							createConfigBtn();
 							configWindow.help();
 						}, 1000);
@@ -1774,7 +1777,7 @@
 		}
 	};
 	var reloadPList = {
-		getPListId: function(href) {
+		getPListId: function (href) {
 			var id;
 			if (typeof href !== 'undefined') {
 				id = href.match(/p=\d*/g) || href.match(/#page=\d*/g) || href.match(/ep\d*/g) || href.match(/ss\d*#\d*/g) || href.match(/watchlater\/#\/av\d*\/p\d*/g) || href.match(/av\d*/g);
@@ -1786,7 +1789,7 @@
 			}
 			return id;
 		},
-		getScreenMode: function() {
+		getScreenMode: function () {
 			var player = isPlayer();
 			if (player === "html5Player") {
 				var screenMode = 'normal';
@@ -1805,53 +1808,55 @@
 				sessionStorage.setItem("adjustPlayer_screenMode", screenMode);
 			}
 		},
-		init: function() {
-		    (function(history){
-			var pushState = history.pushState;
-			history.pushState = function(state) {
-			    if (typeof history.onpushstate == "function") {
-				history.onpushstate({state: state});
-			    }
-			    return pushState.apply(history, arguments);
-			};
-		    })(window.history);
+		init: function () {
+			(function (history) {
+				var pushState = history.pushState;
+				history.pushState = function (state) {
+					if (typeof history.onpushstate == "function") {
+						history.onpushstate({
+							state: state
+						});
+					}
+					return pushState.apply(history, arguments);
+				};
+			})(window.history);
 
-		    var pListId = reloadPList.getPListId(location.href);
-				window.adjustPlayerCurrentPListId = pListId;
+			var pListId = reloadPList.getPListId(location.href);
+			window.adjustPlayerCurrentPListId = pListId;
 
-		    window.onpopstate = history.onpushstate = function(e) {
-			var isReload = false;
-			var reloadTimer = null;
-			clearTimeout(this.reloadTimer);
-			this.reloadTimer = window.setTimeout(function() {
-			    if (isReload === false) {
-				var newPlistId, oldPListId;
-				newPlistId = reloadPList.getPListId(location.href);
-				oldPListId = window.adjustPlayerCurrentPListId;
-				if (newPlistId !== oldPListId) {
-				    console.log('reloadPList:\nnewPlistId:' + newPlistId + "\noldPListId:" + oldPListId);
-				    isReload = true;
-				    if (typeof GM_getValue === 'function') {
-					var setting = config.read();
-					adjustPlayer.reload(setting);
-				    } else {
-					var setting = config.read();
-					setting.then(function(value) {
-					    adjustPlayer.reload(value);
-					});
-				    }
-				} else {
-				    reloadPList.getScreenMode();
-				}
-			    } else {
-				return;
-			    }
-			}, 200);
-		    }
+			window.onpopstate = history.onpushstate = function (e) {
+				var isReload = false;
+				var reloadTimer = null;
+				clearTimeout(this.reloadTimer);
+				this.reloadTimer = window.setTimeout(function () {
+					if (isReload === false) {
+						var newPlistId, oldPListId;
+						newPlistId = reloadPList.getPListId(location.href);
+						oldPListId = window.adjustPlayerCurrentPListId;
+						if (newPlistId !== oldPListId) {
+							console.log('reloadPList:\nnewPlistId:' + newPlistId + "\noldPListId:" + oldPListId);
+							isReload = true;
+							if (typeof GM_getValue === 'function') {
+								var setting = config.read();
+								adjustPlayer.reload(setting);
+							} else {
+								var setting = config.read();
+								setting.then(function (value) {
+									adjustPlayer.reload(value);
+								});
+							}
+						} else {
+							reloadPList.getScreenMode();
+						}
+					} else {
+						return;
+					}
+				}, 200);
+			}
 		}
 	};
 	var config = {
-		storageType: function() {
+		storageType: function () {
 			if (window.localStorage) {
 				var type = localStorage.getItem('adjustPlayer_storageType');
 				if (type === "localStorage") {
@@ -1865,7 +1870,7 @@
 				console.log("adjustPlayer:获取设置失败，不支持localStorage");
 			}
 		},
-		getValue: function(value, defalutValue) {
+		getValue: function (value, defalutValue) {
 			var storageType = config.storageType();
 			if (storageType === "localStorage") {
 				var item;
@@ -1899,7 +1904,7 @@
 				return item;
 			}
 		},
-		setValue: function(name, value) {
+		setValue: function (name, value) {
 			var storageType = config.storageType();
 			if (storageType === "localStorage") {
 				value = JSON.stringify(value);
@@ -1914,7 +1919,7 @@
 				console.log("adjustPlayer:设置" + value + "失败，未知存储类型");
 			}
 		},
-		read: function() {
+		read: function () {
 			if (typeof GM_getValue === 'function') {
 				var adjustPlayerSetting = config.getValue('player_adjustPlayer');
 				if (typeof adjustPlayerSetting !== "undefined" && adjustPlayerSetting !== null) {
@@ -1928,14 +1933,14 @@
 					}
 				}
 			} else {
-				return new Promise(function(resolve, reject) {
+				return new Promise(function (resolve, reject) {
 					var adjustPlayerSetting = config.getValue('player_adjustPlayer');
-					adjustPlayerSetting.then(function(value) {
+					adjustPlayerSetting.then(function (value) {
 						if (typeof value !== "undefined" && value !== null) {
 							resolve(value);
 						} else {
 							var defaultConfig = config.restore();
-							defaultConfig.then(function(value) {
+							defaultConfig.then(function (value) {
 								if (value !== null) {
 									resolve(value);
 								} else {
@@ -1947,10 +1952,10 @@
 				});
 			}
 		},
-		write: function(adjustPlayer) {
+		write: function (adjustPlayer) {
 			config.setValue('player_adjustPlayer', adjustPlayer);
 		},
-		restore: function() {
+		restore: function () {
 			var defalutConfig = '{ "shortcuts": {} }';
 			config.setValue('player_adjustPlayer', JSON.parse(defalutConfig));
 			config.setValue('player_firstrun', true);
@@ -1958,9 +1963,9 @@
 				var item = config.getValue('player_adjustPlayer');
 				return item;
 			} else {
-				return new Promise(function(resolve, reject) {
+				return new Promise(function (resolve, reject) {
 					var item = config.getValue('player_adjustPlayer');
-					item.then(function(value) {
+					item.then(function (value) {
 						resolve(value);
 					});
 				});
@@ -1968,7 +1973,7 @@
 		}
 	};
 	var dialog = {
-		create: function(name, title, bar, content, isModal) {
+		create: function (name, title, bar, content, isModal) {
 			var isExist = document.querySelector('#adjust-player > #' + name);
 			if (isExist === null) {
 				var dialogElement = document.createElement('div');
@@ -1986,7 +1991,7 @@
 				document.querySelector('#adjust-player .adjust-player-mask').setAttribute("style", "display: block;");
 			}
 		},
-		close: function(element) {
+		close: function (element) {
 			if (element.getAttribute('isModal') === "true") {
 				var modalParent = document.querySelector('#' + element.getAttribute('modalParentId') + '');
 				if (modalParent !== null) {
@@ -2000,8 +2005,8 @@
 				document.querySelector('#adjust-player .adjust-player-mask').removeAttribute("style");
 			}
 		},
-		eventBinding: function(element, name) {
-			element.addEventListener('mouseover', function(e) {
+		eventBinding: function (element, name) {
+			element.addEventListener('mouseover', function (e) {
 				var adjustPlayerTooltip = document.querySelector('#adjust-player-tooltip');
 				var tooltip = e.target.getAttribute('tooltip');
 				if (e.target && tooltip !== null) {
@@ -2024,7 +2029,7 @@
 					}
 				}
 			});
-			element.addEventListener('click', function(e) {
+			element.addEventListener('click', function (e) {
 				var action = e.target.getAttribute('action');
 				if (e.target && action !== null) {
 					if (name === "main") {
@@ -2091,11 +2096,11 @@
 		}
 	};
 	var configWindow = {
-		create: function() {
+		create: function () {
 			var name = 'main';
 			var title = '哔哩哔哩播放器调整';
 			var bar = '<span class="btn" action="help">?</span><span class="btn" action="close">X</span>';
-			var content = commentToString(function() {
+			var content = commentToString(function () {
 				/*
          <form>
             <div class="wrapper">
@@ -2256,8 +2261,9 @@
             	</fieldset>
             	<fieldset class="playbackGroup">
             		<legend><label>播放视频</label></legend>
-            		<div class="block">
-            			<label fname="autoPlay"><input name="autoPlay" type="checkbox"><span class="checkbox"></span>自动播放视频</label>
+					<div class="block">
+					<label fname="startFromHistory"><input name="startFromHistory" type="checkbox"><span class="checkbox"></span>从"上次观看"位置开始播放</label>
+					<label fname="autoNextPlist"><input name="autoNextPlist" type="checkbox"><span class="checkbox"></span>自动播放下一个视频<span tooltip="使用帮助：&#10;1：此选项启用后将无视“B站”HTML5播放器自带的“自动换P功能”&#10;2：自动跳过“承包榜”、“充电名单”" class="tipsButton">[?]</span></label>
 				<label fname="autoNextPlist"><input name="autoNextPlist" type="checkbox"><span class="checkbox"></span>自动播放下一个视频<span tooltip="使用帮助：&#10;1：此选项启用后将无视“B站”HTML5播放器自带的“自动换P功能”&#10;2：自动跳过“承包榜”、“充电名单”" class="tipsButton">[?]</span></label>
             			<label fname="autoLoopVideo"><input name="autoLoopVideo" type="checkbox"><span class="checkbox"></span>自动循环播放当前视频</label>
 						<label fname="skipSetTime" class="multiLine"><input name="skipSetTime" type="checkbox" action="childElementDisabledEvent" disabledChildElement="input,skipSetTimeValueMinutes;skipSetTimeValueSeconds" ><span class="checkbox"></span>自动从指定时间开始播放
@@ -2318,6 +2324,7 @@
 							<span tooltip="使用帮助：&#10;1：开启“修改迷你播放器宽度”后，拖动迷你播放器右下角调节按钮，可以调整大小。&#10;2：此功能是“实验功能”，部分页面可能不起作用" class="tipsButton">[?]</span>
 						</div></label>
 						<label fname="autoLightOn"><input name="autoLightOn" type="checkbox"><span class="checkbox"></span>自动播放器关灯<span tooltip="使用帮助：&#10;1：在视频区域内点击右键进行开，关灯操作&#10;2：双击黑暗区域开灯。" class="tipsButton">[?]</span></label>
+						<label fname="reverseMouseWheel"><input name="reverseMouseWheel" type="checkbox" disabled="true"><span class="checkbox"></span>反转全屏模式下鼠标滚轮（未完成）</span></label>
             		</div>
             	</fieldset>
             </div>
@@ -2337,16 +2344,16 @@
            	<div class="btn btn-cancel" action="close">关闭</div>
         </div>
         </form>
-            */
+        */
 			});
 			dialog.create(name, title, bar, content);
 		},
-		load: function(formData) {
+		load: function (formData) {
 			//loadData
 			var form = document.querySelector('#adjust-player #main form');
 			deserialize(form, formData);
 			//fix clonenode select value
-			form.onchange = function(e) {
+			form.onchange = function (e) {
 				var node = e.target;
 				var nodeName = node.nodeName;
 				if (nodeName === "SELECT") {
@@ -2381,7 +2388,7 @@
 				configWindow.help();
 			}
 		},
-		save: function() {
+		save: function () {
 			try {
 				//clone form
 				var newForm = document.createElement('form');
@@ -2471,7 +2478,7 @@
 				location.reload();
 			}
 		},
-		restore: function() {
+		restore: function () {
 			var defaultConfig = config.restore();
 			if (typeof defaultConfig !== 'undefined') {
 				unsafeWindow.alert('恢复设置成功');
@@ -2480,7 +2487,7 @@
 			}
 			location.reload();
 		},
-		mainWindowResizeEvent: function() {
+		mainWindowResizeEvent: function () {
 			var wrapper = document.querySelector('#adjust-player #main form .wrapper');
 			var mainWindow = document.querySelector('#adjust-player #main');
 			var mainWindowHeight = mainWindow.offsetHeight;
@@ -2491,7 +2498,7 @@
 				mainWindow.style = 'margin-top:-' + (mainWindow.offsetHeight / 2) + 'px;';
 			}
 		},
-		childElementDisabledEvent: function(parent, childAndType) {
+		childElementDisabledEvent: function (parent, childAndType) {
 			var childAndType = childAndType.split(",");
 			var type = childAndType[0];
 			var child = childAndType[1];
@@ -2500,7 +2507,7 @@
 			if (type === "input") {
 				var parentElement = document.querySelector('#adjust-player form input[name="' + parent + '"]');
 				var childElements = child.split(";");
-				var setDisabled = function(disabled) {
+				var setDisabled = function (disabled) {
 					for (var i = 0; i < childElements.length; ++i) {
 						if (disabled) {
 							document.querySelector('#adjust-player form [name="' + childElements[i] + '"]').setAttribute('disabled', '');
@@ -2516,7 +2523,7 @@
 				disabledEvent = parentElement.checked ? childElement.classList.remove("disabled") : childElement.classList.add("disabled");
 			}
 		},
-		adjustPlayerSize: function() {
+		adjustPlayerSize: function () {
 			//init
 			if (matchURL.isWatchlater() || matchURL.isOldBangumi() || matchURL.isNewBangumi()) {
 				if (window.confirm('调整大小功能不支持在\n【稍后观看页面】，【番剧页面】 中使用。\n点确定会跳转到测试页面，请在测试页面中重新调整\n取消放弃调整')) {
@@ -2531,7 +2538,7 @@
 
 			//tips
 			var tips = document.createElement('div');
-			tips.innerHTML = commentToString(function() {
+			tips.innerHTML = commentToString(function () {
 				/*
             <div class="info">
               <p>当前宽度：<span class="width">1024</span> px</p>
@@ -2553,7 +2560,7 @@
 
 			//save
 			var tipsSave = document.createElement('div');
-			tipsSave.innerHTML = commentToString(function() {
+			tipsSave.innerHTML = commentToString(function () {
 				/*
             <div class="content">
               <p class="bold">使用帮助</p>
@@ -2595,7 +2602,7 @@
             */
 			});
 			tipsSave.id = "adjust-player-tips-save";
-			tipsSave.onclick = function(e) {
+			tipsSave.onclick = function (e) {
 				var resizePlayerWidth = document.querySelector('#adjust-player form input[name="resizePlayerWidth"]');
 				var resizePlayerRatio = document.querySelector('#adjust-player form input[name="resizePlayerRatio"]');
 				var resizePlayerVideoInfoAndUpInfoPosition = document.querySelector('#adjust-player form input[name="resizePlayerVideoInfoAndUpInfoPosition"]');
@@ -2646,7 +2653,7 @@
 					}
 				}
 			};
-			tipsSave.onchange = function(e) {
+			tipsSave.onchange = function (e) {
 				var name = e.target.getAttribute('name');
 				if (e.target && name !== null) {
 					if (name === "customRatio") {
@@ -2699,12 +2706,12 @@
 
 			//window.cancelAnimationFrame(resizeEventID);
 		},
-		shortcutsWindow: function(e) {
+		shortcutsWindow: function (e) {
 			//create
 			var name = 'shortcutsSetting';
 			var title = '快捷键设置';
 			var bar = '<span class="btn" action="cancel">X</span>';
-			var content = commentToString(function() {
+			var content = commentToString(function () {
 				/*
 			<p style="margin-bottom: 4px;font-size: 16px;">请在输入框内按下需要的按键设置快捷键：<span id="tips" style="text-align: left; color: #ff81aa; margin-top: 33px; right: 32px; position: absolute;"></span></p>
 			<p>
@@ -2772,7 +2779,7 @@
 			document.addEventListener("keydown", focusEvent, false);
 			//console.log(e);
 		},
-		shortcutsSettingClear: function() {
+		shortcutsSettingClear: function () {
 			var typeName = document.querySelector('#shortcutsSetting input[name="typeName"]');
 			var keyName = document.querySelector('#adjust-player #main form .shortcutsGroup input[name="' + typeName.value + 'KeyName"]');
 			var keyCode = document.querySelector('#adjust-player #main form .shortcutsGroup input[name="' + typeName.value + 'KeyCode"]');
@@ -2782,7 +2789,7 @@
 			type.checked = false;
 			dialog.close(document.querySelector('#adjust-player > #shortcutsSetting'));
 		},
-		shortcutsSettingSave: function() {
+		shortcutsSettingSave: function () {
 			try {
 				var tips = document.querySelector('#shortcutsSetting #tips');
 				var kName = document.querySelector('#shortcutsSetting input[name="keyName"]');
@@ -2828,7 +2835,7 @@
 				console.log("shortcutsSettingSave\n " + ex);
 			}
 		},
-		shortcutsSettingCancel: function() {
+		shortcutsSettingCancel: function () {
 			var typeName = document.querySelector('#shortcutsSetting input[name="typeName"]');
 			var keyCode = document.querySelector('#adjust-player #main form .shortcutsGroup input[name="' + typeName.value + 'KeyCode"]');
 			var type = document.querySelector('#adjust-player #main form .shortcutsGroup input[name="' + typeName.value + '"]');
@@ -2840,11 +2847,11 @@
 
 			dialog.close(document.querySelector('#adjust-player > #shortcutsSetting'));
 		},
-		storageTypeWindow: function(e) {
+		storageTypeWindow: function (e) {
 			var name = 'storageType';
 			var title = '更改脚本数据存储类型';
 			var bar = '<span class="btn" action="close">X</span>';
-			var content = commentToString(function() {
+			var content = commentToString(function () {
 				/*
 			<p style="margin-bottom: 4px;font-size: 16px;">请选择脚本数据存储类型：<span id="tips" style="text-align: left; color: #ff81aa; margin-top: 33px; right: 22px; position: absolute;"></span></p>
 			<p style="margin: 10px;font-size: 16px; text-align:center;">
@@ -2882,7 +2889,7 @@
 				}
 			}
 		},
-		storageTypeSave: function() {
+		storageTypeSave: function () {
 			var setStorageTypeValue = null;
 			var storageType = document.querySelectorAll('#storageType input[name="storageType"]'),
 				i;
@@ -2904,11 +2911,11 @@
 				}
 			}
 		},
-		help: function() {
+		help: function () {
 			var name = 'help';
 			var title = '哔哩哔哩播放器调整';
 			var bar = '<span class="btn" action="close">X</span>';
-			var content = commentToString(function() {
+			var content = commentToString(function () {
 				/*
 			<h2 style="font-weight: bold;font-size: 16px;">小提示：</h2>
 			<ol style="padding: 0 0 0 20px;margin:10px 0;">
@@ -2921,7 +2928,7 @@
 
 			var player = isPlayer();
 			if (player === "flashPlayer") {
-				content = commentToString(function() {
+				content = commentToString(function () {
 					/*
 				<h2 style="font-weight: bold;font-size: 16px;">小提示：</h2>
 				<ol style="padding: 0 0 0 20px;margin:10px 0;">
@@ -2940,14 +2947,14 @@
 			dialog.create(name, title, bar, content);
 		},
 
-		init: function() {
+		init: function () {
 			configWindow.create();
 			if (typeof GM_getValue === 'function') {
 				var formData = config.read();
 				configWindow.load(formData);
 			} else {
 				var formData = config.read();
-				formData.then(function(value) {
+				formData.then(function (value) {
 					configWindow.load(value);
 				});
 			}
@@ -2957,7 +2964,7 @@
 	function createConfigBtn() {
 		var isExistAdjustPlayerMain = document.querySelector('#adjust-player');
 		if (isExistAdjustPlayerMain === null) { //isExistAdjustPlayerMain === null
-			var css = commentToString(function() {
+			var css = commentToString(function () {
 				/*
 				#adjust-player-config-btn{position:fixed;bottom:243px;right:6px;z-index:10;}
 				#adjust-player-config-btn span{font-size:12px;display:block;padding:6px 0;text-align:center;line-height:17px;background:#fff;border:1px solid #e7e7e7;-webkit-box-shadow:0 6px 10px 0 hsla(0,0%,73%,.3);box-shadow:0 6px 10px 0 hsla(0,0%,73%,.3);border-radius:2px;color:#212121;width:46px;cursor:pointer;transition:color .3s}
@@ -3021,7 +3028,7 @@
 				#adjust-player-tips .info span{color:#333;font-size:12px;color:#fb7299}
 				#adjust-player-tips .tips-text{position:absolute;bottom:10px;margin-left:10px;color:#99a2aa}
 				#adjust-player-tips .drag-arrow{position:absolute;right:0}
-			*/
+				*/
 			});
 			var styleNode = document.createElement('style');
 			styleNode.type = 'text/css';
@@ -3040,7 +3047,7 @@
 			var configButton = document.createElement('div');
 			configButton.id = 'adjust-player-config-btn';
 			configButton.innerHTML = '<span>播放器<br>调整</span>';
-			configButton.onclick = function() {
+			configButton.onclick = function () {
 				configWindow.init();
 			};
 			document.querySelector('body').appendChild(configButton);
@@ -3048,35 +3055,35 @@
 		}
 	}
 	var matchURL = {
-		isVideoAV: function() {
+		isVideoAV: function () {
 			if (location.href.match(/video\/av\d*/g) !== null) {
 				return true;
 			} else {
 				return false;
 			}
 		},
-		isOldBangumi: function() {
+		isOldBangumi: function () {
 			if (location.hostname === 'bangumi.bilibili.com') {
 				return true;
 			} else {
 				return false;
 			}
 		},
-		isWatchlater: function() {
+		isWatchlater: function () {
 			if (location.href.match(/watchlater\/#\/av\d*\/p\d*/g) !== null) {
 				return true;
 			} else {
 				return false;
 			}
 		},
-		isBangumiMovie: function() {
+		isBangumiMovie: function () {
 			if (location.href.match(/bangumi.bilibili.com\/movie\/\d*/g) !== null) {
 				return true;
 			} else {
 				return false;
 			}
 		},
-		isNewBangumi: function() {
+		isNewBangumi: function () {
 			if (location.href.match(/bangumi\/play\/(ep|ss)\d*/g) !== null) {
 				return true;
 			} else {
@@ -3121,8 +3128,8 @@
 
 	function createMouseoverAndMouseoutEvent(type, element) {
 		if (typeof type !== 'undefined' && typeof element !== 'undefined') {
-			return new Promise(function(resolve, reject) {
-				var createEvent = function(type) {
+			return new Promise(function (resolve, reject) {
+				var createEvent = function (type) {
 					var evt = document.createEvent('Event');
 					if (type === "show") {
 						evt.initEvent('mouseover', true, true);
@@ -3492,7 +3499,7 @@
 		} else {
 			var firstrun = config.getValue('player_firstrun', true);
 			var setting = config.read();
-			Promise.all([firstrun, setting]).then(function(values) {
+			Promise.all([firstrun, setting]).then(function (values) {
 				adjustPlayer.init(values[0], values[1]);
 			});
 		}
