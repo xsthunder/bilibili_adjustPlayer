@@ -6,7 +6,7 @@
 // @homepageURL https://github.com/kkren/bilibili_adjustPlayer
 // @include     http*://www.bilibili.com/video/av*
 // @description 调整B站播放器设置，增加一些实用的功能。原作者为mickey7q7。
-// @version     2.10.2
+// @version     2.10.3
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
@@ -154,13 +154,13 @@
 				}
 			}
 		},
-		// autoPlay: function (set, video) {
-		// 	if (typeof set !== 'undefined' && video !== null) {
-		// 		if (video.play) {
-		// 			video.play();
-		// 		}
-		// 	}
-		// },
+		autoPlay: function (set, video) {
+			if (typeof set !== 'undefined' && video !== null) {
+				if (video.play) {
+					video.play();
+				}
+			}
+		},
 		// bilibili auto play by default
 		startFromHistory: function (set, type) {
 			if (typeof set !== 'undefined') {
@@ -1587,7 +1587,7 @@
 			adjustPlayer.tabDanmulist(setting.tabDanmulist);
 			adjustPlayer.videoSeekingShowSendbar(setting.videoSeekingShowSendbar, video);
 			adjustPlayer.autoHideSendbar(setting.autoHideSendbar, setting.shortcuts.focusDanmakuInput, video);
-			//adjustPlayer.autoPlay(setting.autoPlay, video);
+			adjustPlayer.autoPlay(setting.autoPlay, video);
 			adjustPlayer.autoVideoSpeed(setting.autoVideoSpeed, setting.autoVideoSpeedValue, video);
 			adjustPlayer.skipSetTime(setting.skipSetTime, setting.skipSetTimeValue, video);
 			adjustPlayer.autoNextPlist(setting.autoNextPlist);
@@ -2262,9 +2262,9 @@
             	<fieldset class="playbackGroup">
             		<legend><label>播放视频</label></legend>
 					<div class="block">
-					<label fname="startFromHistory"><input name="startFromHistory" type="checkbox"><span class="checkbox"></span>从"上次观看"位置开始播放</label>
-					<label fname="autoNextPlist"><input name="autoNextPlist" type="checkbox"><span class="checkbox"></span>自动播放下一个视频<span tooltip="使用帮助：&#10;1：此选项启用后将无视“B站”HTML5播放器自带的“自动换P功能”&#10;2：自动跳过“承包榜”、“充电名单”" class="tipsButton">[?]</span></label>
-				<label fname="autoNextPlist"><input name="autoNextPlist" type="checkbox"><span class="checkbox"></span>自动播放下一个视频<span tooltip="使用帮助：&#10;1：此选项启用后将无视“B站”HTML5播放器自带的“自动换P功能”&#10;2：自动跳过“承包榜”、“充电名单”" class="tipsButton">[?]</span></label>
+						<label fname="autoPlay"><input name="autoPlay" type="checkbox"><span class="checkbox"></span>自动播放视频</label>
+						<label fname="startFromHistory"><input name="startFromHistory" type="checkbox"><span class="checkbox"></span>从"上次观看"位置开始播放</label>
+						<label fname="autoNextPlist"><input name="autoNextPlist" type="checkbox"><span class="checkbox"></span>自动播放下一个视频<span tooltip="使用帮助：&#10;1：此选项启用后将无视“B站”HTML5播放器自带的“自动换P功能”&#10;2：自动跳过“承包榜”、“充电名单”" class="tipsButton">[?]</span></label>
             			<label fname="autoLoopVideo"><input name="autoLoopVideo" type="checkbox"><span class="checkbox"></span>自动循环播放当前视频</label>
 						<label fname="skipSetTime" class="multiLine"><input name="skipSetTime" type="checkbox" action="childElementDisabledEvent" disabledChildElement="input,skipSetTimeValueMinutes;skipSetTimeValueSeconds" ><span class="checkbox"></span>自动从指定时间开始播放
             			<div class="newLine">
