@@ -6,7 +6,7 @@
 // @homepageURL https://github.com/kkren/bilibili_adjustPlayer
 // @include     http*://www.bilibili.com/video/av*
 // @description 调整B站播放器设置，增加一些实用的功能。原作者为mickey7q7。
-// @version     2.10.2
+// @version     2.10.3
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
