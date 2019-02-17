@@ -5,8 +5,14 @@
 // @license     GPL-3.0-or-later
 // @homepageURL https://github.com/kkren/bilibili_adjustPlayer
 // @include     http*://www.bilibili.com/video/av*
+// @include     http*://www.bilibili.com/watchlater/*
+// @include     http*://www.bilibili.com/bangumi/play/ep*
+// @include     http*://www.bilibili.com/bangumi/play/ss*
+// @include     http*://bangumi.bilibili.com/anime/*/play*
+// @include     http*://bangumi.bilibili.com/movie/*
+// @exclude     http*://bangumi.bilibili.com/movie/
 // @description 调整B站播放器设置，增加一些实用的功能。原作者为mickey7q7。
-// @version     2.10.3
+// @version     2.10.4
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
@@ -1644,9 +1650,12 @@
 
 						var stardustPlayer = document.querySelector('#entryOld');
 						if (stardustPlayer === null) {
-							clearInterval(timer);
-							console.log('adjustPlayer(ver.stardust):\n旧版播放器页面不支持\n');
-							return;
+							stardustPlayer = document.querySelector('.entry-old');
+							if (stardustPlayer === null) {
+								clearInterval(timer);
+								console.log('adjustPlayer(ver.stardust):\n旧版播放器页面不支持\n');
+								return;
+							}
 						}
 
 						var readyState = querySelectorFromIframe('.bilibili-player-video-panel');
@@ -2324,7 +2333,6 @@
 							<span tooltip="使用帮助：&#10;1：开启“修改迷你播放器宽度”后，拖动迷你播放器右下角调节按钮，可以调整大小。&#10;2：此功能是“实验功能”，部分页面可能不起作用" class="tipsButton">[?]</span>
 						</div></label>
 						<label fname="autoLightOn"><input name="autoLightOn" type="checkbox"><span class="checkbox"></span>自动播放器关灯<span tooltip="使用帮助：&#10;1：在视频区域内点击右键进行开，关灯操作&#10;2：双击黑暗区域开灯。" class="tipsButton">[?]</span></label>
-						<label fname="reverseMouseWheel"><input name="reverseMouseWheel" type="checkbox" disabled="true"><span class="checkbox"></span>反转全屏模式下鼠标滚轮（未完成）</span></label>
             		</div>
             	</fieldset>
             </div>
