@@ -5,6 +5,12 @@
 // @license     GPL-3.0-or-later
 // @homepageURL https://github.com/kkren/bilibili_adjustPlayer
 // @include     http*://www.bilibili.com/video/av*
+// @include     http*://www.bilibili.com/watchlater/*
+// @include     http*://www.bilibili.com/bangumi/play/ep*
+// @include     http*://www.bilibili.com/bangumi/play/ss*
+// @include     http*://bangumi.bilibili.com/anime/*/play*
+// @include     http*://bangumi.bilibili.com/movie/*
+// @exclude     http*://bangumi.bilibili.com/movie/
 // @description 调整B站播放器设置，增加一些实用的功能。原作者为mickey7q7。
 // @version     2.10.3
 // @grant       GM.setValue
@@ -1644,9 +1650,12 @@
 
 						var stardustPlayer = document.querySelector('#entryOld');
 						if (stardustPlayer === null) {
-							clearInterval(timer);
-							console.log('adjustPlayer(ver.stardust):\n旧版播放器页面不支持\n');
-							return;
+							stardustPlayer = document.querySelector('.entry-old');
+							if (stardustPlayer === null) {
+								clearInterval(timer);
+								console.log('adjustPlayer(ver.stardust):\n旧版播放器页面不支持\n');
+								return;
+							}
 						}
 
 						var readyState = querySelectorFromIframe('.bilibili-player-video-panel');
