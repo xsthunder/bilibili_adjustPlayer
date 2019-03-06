@@ -6,6 +6,7 @@
 // @homepageURL https://github.com/kkren/bilibili_adjustPlayer
 // @include     http*://www.bilibili.com/video/av*
 // @include     http*://www.bilibili.com/watchlater/*
+// @include     http*://www.bilibili.com/medialist/play/*
 // @include     http*://www.bilibili.com/bangumi/play/ep*
 // @include     http*://www.bilibili.com/bangumi/play/ss*
 // @include     http*://bangumi.bilibili.com/anime/*/play*
@@ -171,7 +172,7 @@
 		startFromHistory: function (set, type) {
 			if (typeof set !== 'undefined') {
 				var jumpBtn = querySelectorFromIframe('div.bilibili-player-video-toast-item-jump');
-				if (jumpBtn !== null){
+				if (jumpBtn !== null) {
 					doClick(jumpBtn);
 				}
 			}
@@ -1648,14 +1649,12 @@
 						clearInterval(timer);
 					} else if (player === "html5Player") {
 
-						var stardustPlayer = document.querySelector('#entryOld');
-						if (stardustPlayer === null) {
-							stardustPlayer = document.querySelector('.entry-old');
-							if (stardustPlayer === null) {
-								clearInterval(timer);
-								console.log('adjustPlayer(ver.stardust):\n旧版播放器页面不支持\n');
-								return;
-							}
+						var trynewBtn = document.querySelector('.trynew-btn');
+						var bangumiTrynewBtn = document.querySelector('.new-entry');
+						if (trynewBtn !== null || bangumiTrynewBtn !== null) {
+							clearInterval(timer);
+							console.log('adjustPlayer(ver.stardust):\n旧版播放器页面不支持\n');
+							return;
 						}
 
 						var readyState = querySelectorFromIframe('.bilibili-player-video-panel');
@@ -3097,20 +3096,30 @@
 			} else {
 				return false;
 			}
+		},
+		isMedialist: function () {
+			if (location.href.match(/medialist\/play\/(ml)\d*/g) !== null) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	};
 
 	function querySelectorFromIframe(obj) {
-		var iframePlayer = document.querySelector('iframe.bilibiliHtml5Player');
+		var iframePlayer;
 		if (matchURL.isOldBangumi() || matchURL.isNewBangumi()) {
-			if (iframePlayer !== null) {
-				return iframePlayer.contentWindow.document.body.querySelector(obj);
-			} else {
-				return document.querySelector(obj);
-			}
+			iframePlayer = document.querySelector('iframe.bilibiliHtml5Player');
+		}
+		if (matchURL.isMedialist()) {
+			iframePlayer = document.querySelector('iframe#media-player')
+		}
+		if (iframePlayer !== null) {
+			return iframePlayer.contentWindow.document.body.querySelector(obj);
 		} else {
 			return document.querySelector(obj);
 		}
+
 	}
 
 	function isPlayer() {
