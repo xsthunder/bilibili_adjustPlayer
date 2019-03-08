@@ -3107,7 +3107,7 @@
 	};
 
 	function querySelectorFromIframe(obj) {
-		var iframePlayer;
+		var iframePlayer = null;
 		if (matchURL.isOldBangumi() || matchURL.isNewBangumi()) {
 			iframePlayer = document.querySelector('iframe.bilibiliHtml5Player');
 		}
