@@ -13,7 +13,7 @@
 // @include     http*://bangumi.bilibili.com/movie/*
 // @exclude     http*://bangumi.bilibili.com/movie/
 // @description 调整B站播放器设置，增加一些实用的功能。原作者为mickey7q7。
-// @version     2.10.4
+// @version     2.10.5
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
@@ -1579,7 +1579,7 @@
 			setTimeout(function () {
 				adjustPlayer.autoLightOn(setting.autoLightOn);
 			}, 200);
-			
+
 			adjustPlayer.autoLoopVideo(setting.autoLoopVideo);
 			adjustPlayer.tabDanmulist(setting.tabDanmulist);
 			adjustPlayer.videoSeekingShowSendbar(setting.videoSeekingShowSendbar, video);
