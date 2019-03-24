@@ -6,13 +6,14 @@
 // @homepageURL https://github.com/kkren/bilibili_adjustPlayer
 // @include     http*://www.bilibili.com/video/av*
 // @include     http*://www.bilibili.com/watchlater/*
+// @include     http*://www.bilibili.com/medialist/play/*
 // @include     http*://www.bilibili.com/bangumi/play/ep*
 // @include     http*://www.bilibili.com/bangumi/play/ss*
 // @include     http*://bangumi.bilibili.com/anime/*/play*
 // @include     http*://bangumi.bilibili.com/movie/*
 // @exclude     http*://bangumi.bilibili.com/movie/
 // @description 调整B站播放器设置，增加一些实用的功能。原作者为mickey7q7。
-// @version     2.10.4
+// @version     2.10.5
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
@@ -171,7 +172,7 @@
 		startFromHistory: function (set, type) {
 			if (typeof set !== 'undefined') {
 				var jumpBtn = querySelectorFromIframe('div.bilibili-player-video-toast-item-jump');
-				if (jumpBtn !== null){
+				if (jumpBtn !== null) {
 					doClick(jumpBtn);
 				}
 			}
@@ -220,12 +221,15 @@
 
 				if (typeof type !== 'undefined') {
 					return new Promise(function (resolve, reject) {
-						if (type === 'topAndbottom') {
-							hideDanmukuFilterType('top');
-							hideDanmukuFilterType('bottom');
-						} else {
-							hideDanmukuFilterType(type);
-						}
+						var danmakuSettingLitePanel = querySelectorFromIframe('.bilibili-player-video-sendbar .bilibili-player-video-danmaku-root .bilibili-player-video-danmaku-setting .bp-svgicon');
+						createMouseoverAndMouseoutEvent('show', danmakuSettingLitePanel).then(function () {
+							if (type === 'topAndbottom') {
+								hideDanmukuFilterType('top');
+								hideDanmukuFilterType('bottom');
+							} else {
+								hideDanmukuFilterType(type);
+							}
+						});
 						resolve('hideDanmukuFilterType done');
 					});
 				}
@@ -252,16 +256,18 @@
 							});
 						}
 					};
-					if (type === 'on') {
-						if (!isDanmukuPreventShadeCheckboxSelected()) {
-							danmukuPreventShade();
+					var danmakuSettingLitePanel = querySelectorFromIframe('.bilibili-player-video-sendbar .bilibili-player-video-danmaku-root .bilibili-player-video-danmaku-setting .bp-svgicon');
+					createMouseoverAndMouseoutEvent('show', danmakuSettingLitePanel).then(function () {
+						if (type === 'on') {
+							if (!isDanmukuPreventShadeCheckboxSelected()) {
+								danmukuPreventShade();
+							}
+						} else if (type === 'off') {
+							if (isDanmukuPreventShadeCheckboxSelected()) {
+								danmukuPreventShade();
+							}
 						}
-					} else if (type === 'off') {
-						if (isDanmukuPreventShadeCheckboxSelected()) {
-							danmukuPreventShade();
-						}
-					}
-
+					});
 				} catch (e) {
 					console.log('danmukuPreventShade：' + e);
 				}
@@ -1573,22 +1579,7 @@
 			setTimeout(function () {
 				adjustPlayer.autoLightOn(setting.autoLightOn);
 			}, 200);
-			//“隐藏弹幕”最后执行
-			var danmakuSettingLitePanel = querySelectorFromIframe('.bilibili-player-video-sendbar .bilibili-player-video-danmaku-root .bilibili-player-video-danmaku-setting .bp-svgicon');
-			createMouseoverAndMouseoutEvent('show', danmakuSettingLitePanel).then(function (value) {
-				if (value === 'show') {
-					Promise.all([
-						adjustPlayer.hideDanmukuFilterType(setting.hideDanmukuFilterType, setting.hideDanmukuFilterType_Type),
-						adjustPlayer.danmukuPreventShade(setting.danmukuPreventShade, setting.danmukuPreventShadeType)
-					]).then(function (values) {
-						createMouseoverAndMouseoutEvent('hide', danmakuSettingLitePanel).then(function (value) {
-							if (value === 'hide') {
-								adjustPlayer.hideDanmuku(setting.hideDanmuku, setting.hideDanmukuType);
-							}
-						});
-					});
-				}
-			});
+
 			adjustPlayer.autoLoopVideo(setting.autoLoopVideo);
 			adjustPlayer.tabDanmulist(setting.tabDanmulist);
 			adjustPlayer.videoSeekingShowSendbar(setting.videoSeekingShowSendbar, video);
@@ -1598,7 +1589,10 @@
 			adjustPlayer.skipSetTime(setting.skipSetTime, setting.skipSetTimeValue, video);
 			adjustPlayer.autoNextPlist(setting.autoNextPlist);
 			adjustPlayer.startFromHistory(setting.startFromHistory);
-
+			adjustPlayer.hideDanmuku(setting.hideDanmuku, setting.hideDanmukuType);
+			adjustPlayer.hideDanmukuFilterType(setting.hideDanmukuFilterType, setting.hideDanmukuFilterType_Type);
+			adjustPlayer.danmukuPreventShade(setting.danmukuPreventShade, setting.danmukuPreventShadeType);
+			
 			if (isReload) {
 				var screenMode = sessionStorage.getItem("adjustPlayer_screenMode");
 				setTimeout(function () {
@@ -1648,14 +1642,12 @@
 						clearInterval(timer);
 					} else if (player === "html5Player") {
 
-						var stardustPlayer = document.querySelector('#entryOld');
-						if (stardustPlayer === null) {
-							stardustPlayer = document.querySelector('.entry-old');
-							if (stardustPlayer === null) {
-								clearInterval(timer);
-								console.log('adjustPlayer(ver.stardust):\n旧版播放器页面不支持\n');
-								return;
-							}
+						var trynewBtn = document.querySelector('.trynew-btn');
+						var bangumiTrynewBtn = document.querySelector('.new-entry');
+						if (trynewBtn !== null || bangumiTrynewBtn !== null) {
+							clearInterval(timer);
+							console.log('adjustPlayer(ver.stardust):\n旧版播放器页面不支持\n');
+							return;
 						}
 
 						var readyState = querySelectorFromIframe('.bilibili-player-video-panel');
@@ -2265,7 +2257,7 @@
 						</label>
             			<label fname="autoWebFullScreen"><input name="autoWebFullScreen" type="checkbox"><span class="checkbox"></span>自动网页全屏<span tooltip="使用帮助：&#10;1：按Esc键退出网页全屏&#10;3：开启此功能后，调整大小，自动宽屏，定位功能不会启用" class="tipsButton">[?]</span></label>
             			<label fname="doubleClickFullScreen" class="multiLine"><input name="doubleClickFullScreen" type="checkbox" action="childElementDisabledEvent" disabledChildElement="input,doubleClickFullScreenDelayed" ><span class="checkbox"></span>双击全屏<span tooltip="使用帮助：&#10;1：双击视频区域全屏" class="tipsButton">[?]</span>
-						<div class="newLine">播放/暂停延时<input name="doubleClickFullScreenDelayed" type="number" min="0" max="500" placeholder="200" value="200" style="width: 45px;">毫秒<span tooltip="使用帮助：&#10;1：开启“双击全屏”功能后点击视频区域“播放/暂停”会增加延时，使全屏功能更流畅&#10;2：由于增加了延时，导致点击视频区域“播放/暂停”功能不是及时的，这时可以用键盘空格键暂停&#10;3：毫秒数设置为0，关闭延时&#10;4：由于电脑的性能，实际的延迟比设置的更高" class="tipsButton">[?]</span></div></label>
+						<div class="newLine">播放/暂停延时<input name="doubleClickFullScreenDelayed" type="number" min="0" max="500" placeholder="200" value="200" style="width: 45px;">毫秒<span tooltip="使用帮助：&#10;0：非常建议设置为0！！！！&#10;1：开启“双击全屏”功能后点击视频区域“播放/暂停”会增加延时，使全屏功能更流畅&#10;2：由于增加了延时，导致点击视频区域“播放/暂停”功能不是及时的，这时可以用键盘空格键暂停&#10;3：毫秒数设置为0，关闭延时&#10;4：由于电脑的性能，实际的延迟比设置的更高" class="tipsButton">[?]</span></div></label>
 					</div>
             	</fieldset>
             	<fieldset class="playbackGroup">
@@ -3097,20 +3089,30 @@
 			} else {
 				return false;
 			}
+		},
+		isMedialist: function () {
+			if (location.href.match(/medialist\/play\/(ml)\d*/g) !== null) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	};
 
 	function querySelectorFromIframe(obj) {
-		var iframePlayer = document.querySelector('iframe.bilibiliHtml5Player');
+		var iframePlayer = null;
 		if (matchURL.isOldBangumi() || matchURL.isNewBangumi()) {
-			if (iframePlayer !== null) {
-				return iframePlayer.contentWindow.document.body.querySelector(obj);
-			} else {
-				return document.querySelector(obj);
-			}
+			iframePlayer = document.querySelector('iframe.bilibiliHtml5Player');
+		}
+		if (matchURL.isMedialist()) {
+			iframePlayer = document.querySelector('iframe#media-player')
+		}
+		if (iframePlayer !== null) {
+			return iframePlayer.contentWindow.document.body.querySelector(obj);
 		} else {
 			return document.querySelector(obj);
 		}
+
 	}
 
 	function isPlayer() {
