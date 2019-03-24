@@ -221,12 +221,15 @@
 
 				if (typeof type !== 'undefined') {
 					return new Promise(function (resolve, reject) {
-						if (type === 'topAndbottom') {
-							hideDanmukuFilterType('top');
-							hideDanmukuFilterType('bottom');
-						} else {
-							hideDanmukuFilterType(type);
-						}
+						var danmakuSettingLitePanel = querySelectorFromIframe('.bilibili-player-video-sendbar .bilibili-player-video-danmaku-root .bilibili-player-video-danmaku-setting .bp-svgicon');
+						createMouseoverAndMouseoutEvent('show', danmakuSettingLitePanel).then(function () {
+							if (type === 'topAndbottom') {
+								hideDanmukuFilterType('top');
+								hideDanmukuFilterType('bottom');
+							} else {
+								hideDanmukuFilterType(type);
+							}
+						});
 						resolve('hideDanmukuFilterType done');
 					});
 				}
@@ -253,16 +256,18 @@
 							});
 						}
 					};
-					if (type === 'on') {
-						if (!isDanmukuPreventShadeCheckboxSelected()) {
-							danmukuPreventShade();
+					var danmakuSettingLitePanel = querySelectorFromIframe('.bilibili-player-video-sendbar .bilibili-player-video-danmaku-root .bilibili-player-video-danmaku-setting .bp-svgicon');
+					createMouseoverAndMouseoutEvent('show', danmakuSettingLitePanel).then(function () {
+						if (type === 'on') {
+							if (!isDanmukuPreventShadeCheckboxSelected()) {
+								danmukuPreventShade();
+							}
+						} else if (type === 'off') {
+							if (isDanmukuPreventShadeCheckboxSelected()) {
+								danmukuPreventShade();
+							}
 						}
-					} else if (type === 'off') {
-						if (isDanmukuPreventShadeCheckboxSelected()) {
-							danmukuPreventShade();
-						}
-					}
-
+					});
 				} catch (e) {
 					console.log('danmukuPreventShade：' + e);
 				}
@@ -1574,22 +1579,7 @@
 			setTimeout(function () {
 				adjustPlayer.autoLightOn(setting.autoLightOn);
 			}, 200);
-			//“隐藏弹幕”最后执行
-			var danmakuSettingLitePanel = querySelectorFromIframe('.bilibili-player-video-sendbar .bilibili-player-video-danmaku-root .bilibili-player-video-danmaku-setting .bp-svgicon');
-			createMouseoverAndMouseoutEvent('show', danmakuSettingLitePanel).then(function (value) {
-				if (value === 'show') {
-					Promise.all([
-						adjustPlayer.hideDanmukuFilterType(setting.hideDanmukuFilterType, setting.hideDanmukuFilterType_Type),
-						adjustPlayer.danmukuPreventShade(setting.danmukuPreventShade, setting.danmukuPreventShadeType)
-					]).then(function (values) {
-						createMouseoverAndMouseoutEvent('hide', danmakuSettingLitePanel).then(function (value) {
-							if (value === 'hide') {
-								adjustPlayer.hideDanmuku(setting.hideDanmuku, setting.hideDanmukuType);
-							}
-						});
-					});
-				}
-			});
+			
 			adjustPlayer.autoLoopVideo(setting.autoLoopVideo);
 			adjustPlayer.tabDanmulist(setting.tabDanmulist);
 			adjustPlayer.videoSeekingShowSendbar(setting.videoSeekingShowSendbar, video);
@@ -1599,7 +1589,10 @@
 			adjustPlayer.skipSetTime(setting.skipSetTime, setting.skipSetTimeValue, video);
 			adjustPlayer.autoNextPlist(setting.autoNextPlist);
 			adjustPlayer.startFromHistory(setting.startFromHistory);
-
+			adjustPlayer.hideDanmuku(setting.hideDanmuku, setting.hideDanmukuType);
+			adjustPlayer.hideDanmukuFilterType(setting.hideDanmukuFilterType, setting.hideDanmukuFilterType_Type);
+			adjustPlayer.danmukuPreventShade(setting.danmukuPreventShade, setting.danmukuPreventShadeType);
+			
 			if (isReload) {
 				var screenMode = sessionStorage.getItem("adjustPlayer_screenMode");
 				setTimeout(function () {
