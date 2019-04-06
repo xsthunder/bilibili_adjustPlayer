@@ -1565,7 +1565,7 @@
 			var video = querySelectorFromIframe('.bilibili-player-video video');
 			//给老版本初始化“双击全屏延时”的默认值
 			if (setting.doubleClickFullScreen === true && typeof setting.doubleClickFullScreenDelayed === 'undefined') {
-				adjustPlayer.doubleClickFullScreen(setting.doubleClickFullScreen, 200);
+				adjustPlayer.doubleClickFullScreen(setting.doubleClickFullScreen, 0);
 			} else {
 				adjustPlayer.doubleClickFullScreen(setting.doubleClickFullScreen, setting.doubleClickFullScreenDelayed);
 			}
@@ -2257,7 +2257,7 @@
 						</label>
             			<label fname="autoWebFullScreen"><input name="autoWebFullScreen" type="checkbox"><span class="checkbox"></span>自动网页全屏<span tooltip="使用帮助：&#10;1：按Esc键退出网页全屏&#10;3：开启此功能后，调整大小，自动宽屏，定位功能不会启用" class="tipsButton">[?]</span></label>
             			<label fname="doubleClickFullScreen" class="multiLine"><input name="doubleClickFullScreen" type="checkbox" action="childElementDisabledEvent" disabledChildElement="input,doubleClickFullScreenDelayed" ><span class="checkbox"></span>双击全屏<span tooltip="使用帮助：&#10;1：双击视频区域全屏" class="tipsButton">[?]</span>
-						<div class="newLine">播放/暂停延时<input name="doubleClickFullScreenDelayed" type="number" min="0" max="500" placeholder="200" value="200" style="width: 45px;">毫秒<span tooltip="使用帮助：&#10;0：非常建议设置为0！！！！&#10;1：开启“双击全屏”功能后点击视频区域“播放/暂停”会增加延时，使全屏功能更流畅&#10;2：由于增加了延时，导致点击视频区域“播放/暂停”功能不是及时的，这时可以用键盘空格键暂停&#10;3：毫秒数设置为0，关闭延时&#10;4：由于电脑的性能，实际的延迟比设置的更高" class="tipsButton">[?]</span></div></label>
+						<div class="newLine">播放/暂停延时<input name="doubleClickFullScreenDelayed" type="number" min="0" max="500" placeholder="0" value="0" style="width: 45px;">毫秒<span tooltip="使用帮助：&#10;0：非常建议设置为0！！！！&#10;1：开启“双击全屏”功能后点击视频区域“播放/暂停”会增加延时，使全屏功能更流畅&#10;2：由于增加了延时，导致点击视频区域“播放/暂停”功能不是及时的，这时可以用键盘空格键暂停&#10;3：毫秒数设置为0，关闭延时&#10;4：由于电脑的性能，实际的延迟比设置的更高" class="tipsButton">[?]</span></div></label>
 					</div>
             	</fieldset>
             	<fieldset class="playbackGroup">
@@ -2463,7 +2463,7 @@
 					if (!isNaN(doubleClickFullScreenDelayed)) {
 						formData.doubleClickFullScreenDelayed = doubleClickFullScreenDelayed;
 					} else {
-						formData.doubleClickFullScreenDelayed = 200;
+						formData.doubleClickFullScreenDelayed = 0;
 					}
 				} else {
 					delete formData.doubleClickFullScreenDelayed;
