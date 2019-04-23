@@ -230,6 +230,7 @@
 								hideDanmukuFilterType(type);
 							}
 						});
+						createMouseoverAndMouseoutEvent('hide', danmakuSettingLitePanel);
 						resolve('hideDanmukuFilterType done');
 					});
 				}
@@ -268,6 +269,7 @@
 							}
 						}
 					});
+					createMouseoverAndMouseoutEvent('hide', danmakuSettingLitePanel);
 				} catch (e) {
 					console.log('danmukuPreventShade：' + e);
 				}
