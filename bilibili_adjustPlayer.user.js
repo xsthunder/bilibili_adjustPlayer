@@ -104,7 +104,7 @@
 							var playerWrapper;
 							var scrollToY;
 							if (matchURL.isVideoAV()) {
-								playerWrapper = document.querySelector('#bofqi > .player');
+								playerWrapper = document.querySelector('#bofqi');
 								scrollToY = playerWrapper.offsetTop;
 							}
 							if (typeof offsetValue !== 'undefined' && typeof offsetType !== 'undefined') {
