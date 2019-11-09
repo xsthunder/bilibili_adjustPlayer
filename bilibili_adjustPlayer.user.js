@@ -1654,8 +1654,9 @@
 
 						var readyState = querySelectorFromIframe('.bilibili-player-video-panel');
 						var video = querySelectorFromIframe('.bilibili-player-video video');
+						var sendbar = querySelectorFromIframe('.bilibili-player-video-sendbar');
 						var isReload = false;
-						if (video !== null && readyState !== null) {
+						if (video !== null && readyState !== null && sendbar.childNodes.length !== 0) {
 							if (readyState.getAttribute('style') !== null && readyState.getAttribute('style').search("display: none;") !== -1) {
 								try {
 									createConfigBtn();
