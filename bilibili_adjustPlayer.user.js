@@ -171,10 +171,15 @@
 		// bilibili auto play by default
 		startFromHistory: function (set, type) {
 			if (typeof set !== 'undefined') {
-				var jumpBtn = querySelectorFromIframe('div.bilibili-player-video-toast-item-jump');
-				if (jumpBtn !== null) {
-					doClick(jumpBtn);
-				}
+				var timerCount = 0;
+				var timer = window.setInterval(function () {
+					var jumpBtn = querySelectorFromIframe('.bilibili-player-video-toast-item-jump');
+					if (timerCount >= 10 || jumpBtn !== null) {
+						doClick(jumpBtn);
+						clearInterval(timer);
+					}
+					timerCount++;
+				}, 200);
 			}
 		},
 		hideDanmuku: function (set, type) {
