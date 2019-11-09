@@ -13,7 +13,7 @@
 // @include     http*://bangumi.bilibili.com/movie/*
 // @exclude     http*://bangumi.bilibili.com/movie/
 // @description 调整B站播放器设置，增加一些实用的功能。原作者为mickey7q7。
-// @version     2.10.6
+// @version     2.10.7
 // @grant       GM.setValue
 // @grant       GM_setValue
 // @grant       GM.getValue
@@ -171,10 +171,15 @@
 		// bilibili auto play by default
 		startFromHistory: function (set, type) {
 			if (typeof set !== 'undefined') {
-				var jumpBtn = querySelectorFromIframe('div.bilibili-player-video-toast-item-jump');
-				if (jumpBtn !== null) {
-					doClick(jumpBtn);
-				}
+				var timerCount = 0;
+				var timer = window.setInterval(function () {
+					var jumpBtn = querySelectorFromIframe('.bilibili-player-video-toast-item-jump');
+					if (timerCount >= 10 || jumpBtn !== null) {
+						doClick(jumpBtn);
+						clearInterval(timer);
+					}
+					timerCount++;
+				}, 200);
 			}
 		},
 		hideDanmuku: function (set, type) {
@@ -1582,7 +1587,7 @@
 				adjustPlayer.autoLightOn(setting.autoLightOn);
 			}, 200);
 
-			adjustPlayer.autoLoopVideo(setting.autoLoopVideo);
+			//adjustPlayer.autoLoopVideo(setting.autoLoopVideo);
 			adjustPlayer.tabDanmulist(setting.tabDanmulist);
 			adjustPlayer.videoSeekingShowSendbar(setting.videoSeekingShowSendbar, video);
 			adjustPlayer.autoHideSendbar(setting.autoHideSendbar, setting.shortcuts.focusDanmakuInput, video);
@@ -1654,8 +1659,9 @@
 
 						var readyState = querySelectorFromIframe('.bilibili-player-video-panel');
 						var video = querySelectorFromIframe('.bilibili-player-video video');
+						var sendbar = querySelectorFromIframe('.bilibili-player-video-sendbar');
 						var isReload = false;
-						if (video !== null && readyState !== null) {
+						if (video !== null && readyState !== null && sendbar.childNodes.length !== 0) {
 							if (readyState.getAttribute('style') !== null && readyState.getAttribute('style').search("display: none;") !== -1) {
 								try {
 									createConfigBtn();
@@ -2153,9 +2159,11 @@
             						<input type="hidden" name="lightOnOffKeyCode" list="shortcuts" KeyCode="true">
             					</label>
 								<label>
-            						<input name="loopVideoOnOff" type="checkbox" list="shortcuts"><span class="checkbox"></span>循环播放  <span class="tipsButton" action="shortcuts" typeName="loopVideoOnOff">[设置]</span>
+									<del>
+            						<input name="loopVideoOnOff" type="checkbox" list="shortcuts" disabled><span class="checkbox"></span>循环播放  <span class="tipsButton" action="shortcuts" typeName="loopVideoOnOff">[设置]</span>
             						<input type="text" name="loopVideoOnOffKeyName" readOnly="true" list="shortcuts">
-            						<input type="hidden" name="loopVideoOnOffKeyCode" list="shortcuts" KeyCode="true">
+									<input type="hidden" name="loopVideoOnOffKeyCode" list="shortcuts" KeyCode="true">
+									</del>
             					</label>
 								<label>
             						<input name="focusPlayer" type="checkbox" list="shortcuts"><span class="checkbox"></span>定位到播放器<span tooltip="使用帮助：&#10;1：具体位置根据“功能调整” - “自动定位到XXX顶端” 设置的值来定位&#10（没设置“功能调整” - “自动定位到XXX顶端”功能的话，默认定位到播放器顶端）&#10;2：按下后会在“播放器位置”，和“之前浏览的位置”进行切换" class="tipsButton">[?]</span>
@@ -2268,7 +2276,7 @@
 						<label fname="autoPlay"><input name="autoPlay" type="checkbox"><span class="checkbox"></span>自动播放视频</label>
 						<label fname="startFromHistory"><input name="startFromHistory" type="checkbox"><span class="checkbox"></span>从"上次观看"位置开始播放</label>
 						<label fname="autoNextPlist"><input name="autoNextPlist" type="checkbox"><span class="checkbox"></span>自动播放下一个视频<span tooltip="使用帮助：&#10;1：此选项启用后将无视“B站”HTML5播放器自带的“自动换P功能”&#10;2：自动跳过“承包榜”、“充电名单”" class="tipsButton">[?]</span></label>
-            			<label fname="autoLoopVideo"><input name="autoLoopVideo" type="checkbox"><span class="checkbox"></span>自动循环播放当前视频</label>
+            			<del><label fname="autoLoopVideo"><input name="autoLoopVideo" type="checkbox" disabled><span class="checkbox"></span>自动循环播放当前视频</label></del>
 						<label fname="skipSetTime" class="multiLine"><input name="skipSetTime" type="checkbox" action="childElementDisabledEvent" disabledChildElement="input,skipSetTimeValueMinutes;skipSetTimeValueSeconds" ><span class="checkbox"></span>自动从指定时间开始播放
             			<div class="newLine">
             				<input name="skipSetTimeValueMinutes" type="number" min="0" max="60" placeholder="0" value="0" style="width: 45px;" disabled="">分钟
