@@ -329,9 +329,9 @@
 		},
 		autoWebFullScreen: function (set) {
 			if (typeof set !== 'undefined') {
-				var controlBtn = querySelectorFromIframe('.bilibili-player-video-web-fullscreen > i');
+				var controlBtn = document.getElementsByClassName("bilibili-player-iconfont bilibili-player-iconfont-web-fullscreen-off player-tooltips-trigger")[0];
 				if (controlBtn !== null) {
-					var screenMode = sessionStorage.getItem("adjustPlayer_screenMode");
+					var screenMode = document.getElementById("bofqi").className;
 					if (screenMode !== "webfullscreen") {
 						doClick(controlBtn);
 					}
@@ -1599,10 +1599,11 @@
 			adjustPlayer.hideDanmuku(setting.hideDanmuku, setting.hideDanmukuType);
 			adjustPlayer.hideDanmukuFilterType(setting.hideDanmukuFilterType, setting.hideDanmukuFilterType_Type);
 			adjustPlayer.danmukuPreventShade(setting.danmukuPreventShade, setting.danmukuPreventShadeType);
-			
+
 			if (isReload) {
 				var screenMode = sessionStorage.getItem("adjustPlayer_screenMode");
 				setTimeout(function () {
+					console.log(screenMode)
 					if (screenMode === 'widescreen') {
 						adjustPlayer.fixWidescreenFocusPlayer(setting, isReload, adjustPlayer.autoWidescreen);
 						adjustPlayer.autoFocusPlayer(setting.autoFocusPlayer, setting.autoFocusPlayerOffsetType, setting.autoFocusPlayerOffsetValue);
@@ -1748,8 +1749,9 @@
 				} else if (player === "html5Player") {
 					var readyState = querySelectorFromIframe('.bilibili-player-video-panel');
 					var video = querySelectorFromIframe('.bilibili-player-video video');
+					var sendbar = querySelectorFromIframe('.bilibili-player-video-sendbar');
 					var isReload = true;
-					if (video !== null && readyState !== null) {
+					if (video !== null && readyState !== null && sendbar.childNodes.length !== 0) {
 						if (readyState.getAttribute('style') !== null && readyState.getAttribute('style').search("display: none;") !== -1) {
 							try {
 								createConfigBtn();
@@ -1804,11 +1806,11 @@
 				var screenMode = 'normal';
 				var player = querySelectorFromIframe('#bilibiliPlayer').getAttribute("class");
 				if (player !== null) {
-					if (player.search("widescreen") !== -1) {
+					if (player.search("mode-widescreen") !== -1) {
 						screenMode = 'widescreen';
-					} else if (player.search("webfullscreen") !== -1) {
+					} else if (player.search("mode-webfullscreen") !== -1) {
 						screenMode = 'webfullscreen';
-					} else if (player.search("fullscreen") !== -1) {
+					} else if (player.search("mode-fullscreen") !== -1) {
 						screenMode = 'fullscreen';
 					} else {
 						screenMode = 'normal';
