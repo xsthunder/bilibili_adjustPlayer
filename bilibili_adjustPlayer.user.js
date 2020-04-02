@@ -4,6 +4,7 @@
 // @author      kkren
 // @license     GPL-3.0-or-later
 // @homepageURL https://github.com/kkren/bilibili_adjustPlayer
+// @include     http*://www.bilibili.com/video/av*
 // @include     http*://www.bilibili.com/video/BV*
 // @include     http*://www.bilibili.com/watchlater/*
 // @include     http*://www.bilibili.com/medialist/play/*
@@ -1075,7 +1076,7 @@
 					}
 				},
 				webfullscreen: function () {
-					var controlBtn = querySelectorFromIframe('.bilibili-player-video-web-fullscreen > i');
+					var controlBtn = querySelectorFromIframe('.bilibili-player-video-web-fullscreen');
 					if (controlBtn !== null) {
 						doClick(controlBtn);
 
@@ -3068,7 +3069,7 @@
 	}
 	var matchURL = {
 		isVideoAV: function () {
-			if (location.href.match(/video\/av\d*/g) !== null) {
+			if (location.href.match(/video\/(av(\d+)|BV(\S+))\d*/g) !== null) {
 				return true;
 			} else {
 				return false;
@@ -3082,7 +3083,7 @@
 			}
 		},
 		isWatchlater: function () {
-			if (location.href.match(/watchlater\/#\/av\d*\/p\d*/g) !== null) {
+			if (location.href.match(/watchlater\/#\/(av(\d+)|BV(\S+))\d*\/p\d*/g) !== null) {
 				return true;
 			} else {
 				return false;
