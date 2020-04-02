@@ -1075,7 +1075,7 @@
 					}
 				},
 				webfullscreen: function () {
-					var controlBtn = querySelectorFromIframe('.bilibili-player-video-web-fullscreen > i');
+					var controlBtn = querySelectorFromIframe('.bilibili-player-video-web-fullscreen');
 					if (controlBtn !== null) {
 						doClick(controlBtn);
 
