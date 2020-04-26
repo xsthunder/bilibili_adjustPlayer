@@ -2325,6 +2325,10 @@
             					比例<input name="resizePlayerRatio" type="text" class="hide" readOnly="true" value="16/9">
 							</div>
 						</label>
+            			<label fname="setStableBuffer" class="multiLine">
+				        <input name="setStableBuffer" type="checkbox" action="childElementDisabledEvent" disabledChildElement="input,setStableBufferTime" ><span class="checkbox"></span>设置视频缓冲时间
+            				<input name="setStableBufferTime" type="number" min="30" value="1800" placeholder="320" style="width: 45px;" disabled="">秒
+				</label>
             			<label fname="resizeMiniPlayer" class="multiLine">
             				<input name="resizeMiniPlayer" type="checkbox" action="childElementDisabledEvent" disabledChildElement="input,resizeMiniPlayerSize;resizeMiniPlayerSizeResizable" ><span class="checkbox"></span>迷你播放器宽度
             				<input name="resizeMiniPlayerSize" type="number" min="0" value="320" placeholder="320" style="width: 45px;" disabled="">像素
